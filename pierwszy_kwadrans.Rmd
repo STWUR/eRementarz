@@ -1,0 +1,134 @@
+---
+title: "Ile kosztują mieszkania?"
+output:
+  html_document: default
+  html_notebook: default
+---
+
+Można by zacząć szkolenie od powiedzenie czym jest R, ale wychodzimy z 
+założenia, że zamiast definiować młotek, lepiej jest za jego pomocą wbić
+parę gwoździ. Definicja przyjdzie z praktyką.
+
+Dzięki R możemy analizować dane. Jakie dane? W gruncie rzeczy dowolne.
+Zacznijmy od cen mieszkań wystawionych w serwisie oto.dom we Wrocławiu.
+
+Dane znajdują się w pliku *mieszkania_wroclaw_ceny.csv*. Takie pliki do R
+wczytujemy prostym poleceniem.
+
+```{r wczytanie_danych}
+mieszkania <- read.csv("mieszkania_wroclaw_ceny.csv")
+```
+
+Co zrobiliśmy? Powiedzieliśmy, że chcemy przeczytać plik typu csv (*read.csv*)
+i to co wczytamy chcemy żeby było dostępne zawsze wtedy kiedy wpiszemy 
+*mieszkania*.
+
+Co się znajduję w naszych danych?
+
+```{r}
+head(mieszkania)
+```
+
+*head* czyli pokaż 6 pierwszych wierszy w danych. Mamy informacje o liczbie pokoi,
+metrażu, cenie za m2, roku budowy, piętrze i liczbie pięter w budynku oraz o dzielnicy.
+
+Możemy policzyć łatwo krótkie podsumowanie naszych danych
+
+```{r}
+summary(mieszkania)
+```
+
+Minimalny metraż to 16. 25% mieszkań ma powierzchnię mniejszą niż 46 m2, a połowa
+mniejszą niż 55.5. Największe oferowane mieszkanie ma 417 metrów kwadratowych.
+
+Zanim przejdziemy dalej, zauważmy jedną rzecz. Ostatnia zmienna
+dzielnica, różni się od pozostałych. Można powiedzieć, że 1 pokój to więcej niż dwa pokoje,
+ale nie można powiedzieć, że Śródmieście jest bardziej niż Psie Pole :) 
+Dodaktowo metraż może być dowolny, a piętro jest wartością całkowitą 
+(próżno szukać we Wrocławiu piętra 9 3/4 ).
+
+Po co nam dane? Po to, żeby dowiedzieć się czegoś o świecie, coś zrozumieć.
+Może chcemy obejrzeć wszystkie dane ze Starego Miasta?
+
+```{r, message=FALSE}
+library(dplyr)
+filter(mieszkania, dzielnica == "Stare Miasto")
+```
+
+Co się stało? Załadowaliśmy bibliotekę *dplyr*, która ułatwia nam przetwarzanie danych.
+Następnie wybraliśmy wszystkie oferty, które znajdują się na Starym Mieście.
+
+Warunki mozna łączyć
+
+```{r}
+filter(mieszkania, dzielnica == "Stare Miasto", rok == 2017)
+```
+
+Co jeszcze potrafi dplyr? Może nie interesuje nas nic poza ceną i dzielnicą?
+
+```{r}
+select(mieszkania, dzielnica, cena_m2)
+```
+
+A może interesuje nas czy budynek był wybudowany po wojnie czy przed wojną?
+
+```{r}
+mutate(mieszkania, przed_wojna = rok < 1945)
+```
+
+Te komendy można ze sobą łączyć w tak zwane strumienie (pipes).
+
+```{r}
+mieszkania %>%
+  filter(dzielnica == "Śródmieście") %>%
+  select(dzielnica, pietro, cena_m2) %>%
+  mutate(czy_parter = (pietro == 0))
+```
+
+Co potrafimy zrobić?
+
+* wybrać poszczególne wiersze za pomocą warunków logicznych (filter)
+* wybrać poszczególne kolumny (select)
+* dodać nowe kolumny (mutate)
+
+#### Podsumowania
+
+Interesować nas może podsumowanie. Np. ile średnio kosztują mieszkania w zależności
+od liczby pokojów lub piętra.
+
+```{r}
+mieszkania %>%
+  group_by(n_pokoj) %>%
+  summarise(srednia_cena = mean(cena_m2))
+```
+
+Najdroższe są kawalerki. Wraz ze wzrostem liczby pokojów tanieją osiągając minimum
+dla mieszkań 4-pokojowych. Potem znowu rosną, bo mieszkania zaczynają być luksusowe. 
+
+Jak wiadomo jeden wykres znaczy więcej niż tysiąc tabel. Zróbmy zatem prostą wizualizację.
+
+```{r, message=FALSE}
+library(ggplot2)
+srednia_cena_pokoje <- mieszkania %>%
+  group_by(n_pokoj) %>%
+  summarise(srednia_cena = mean(cena_m2))
+```
+
+```{r, eval = FALSE}
+ggplot(srednia_cena_pokoje, aes(x = n_pokoj, y = srednia_cena))
+```
+
+Mówimy jak ma wyglądać wykres. Chcemy użyć danych z *srednia_cena_dzielnice*,
+na osi x(poziomej) chcemy mieć liczbę pokojów, a na osi y (pionowej)
+ich średnią cenę. Zaznaczmy wartości na wykresie za pomocą słupków.
+
+```{r, eval = FALSE}
+ggplot(srednia_cena_pokoje, aes(x = n_pokoj, y = srednia_cena)) +
+  geom_bar(stat = "identity")
+```
+
+#### Zadanie
+
+Stwórz wizualizację, która pokazałaby średnią cenę metra kwadratowego mieszkania
+w zależności od tego w jakiej dzielnicy się ono znajduje.
+
