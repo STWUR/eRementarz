@@ -1,0 +1,90 @@
+---
+title: "Szkolenie z R"
+author: "Piotr J. Sobczyk"
+date: "4 August 2017"
+output: html_document
+---
+
+Cel: Chcemy zrobić kilkugodzinne (6?) szkolenie dla osób zupełnie 
+nieznających R. W tym czasie chcemy dać narzędzia do zrobienia czegoś konkretnego.
+Skupiamy się na dwóch aspektach - przetwarzania danych (dplyr, tidyr) i
+wizualizacji (ggplot2).
+
+Osoby będą z różnym backgroundem, więc myślę, że warto, zamiast jednego
+głównego tematu mieć 3 mniejsze. Jeden będzie dotyczył miasta, drugi będzie
+związany z biologią, trzeci z ekonomią.
+
+### Pierwsze 15 minut...
+
+... ma doprowadzić do tego, że każdy będzie w stanie stworzyć swój pierwszy wykres.
+,,Za 15 minut będziecie potrafili przetworzyć dane i je zwizualizować"
+
+1. Ładowanie danych dotyczących mieszkań (read.csv). Wspomnienie o tym czym jest csv
+i z jakich innych pików da się ładować dane (xls i bezpośrednio z baz danych).
+2. Co się znajduje w danych? Funkcje summary i str. Napomknięcie o typach danych
+,,liczba to nie to samo co ciąg znaków". Bez wchodzenia w szczegóły
+3. Co dalej zrobić z ramką danych? Podstawowe komendy dplyr - filter, select, mutate
+4. Wcyiągnięcie informacji z danych. Bardzo podobnie do SQL. Wszystko dzieje się
+ w zgodzie z intuicją. Konstrukcja kodu jest niemal jak pisanie zdań w języku angielskim.
+ 5. group_by, summarize
+ 6. Przykład do policzenia średniej ceny w zależności od liczby pokojów
+ 7. Mamy tabelę, chcemy wykres
+ 8. ggplot. Na wykresie określamy co ma być na osi poziomej, pionowej (x i y),
+ od czego ma zależeć kolor itd
+ 9. Musimy też określić jaki rodzaj wykresu chcemy stworzyć. Może interesuje nas 
+ zaznaczenie punktów (jak przy wynikach sprzedaży produktów)? 
+ A może chcemy mieć słupki (jak na wykresach poparcia partii politycznych)?
+ 10. geom_bar
+ 11. Voila, pierwszy wykres gotowy
+ 
+#### Zadanie
+ 
+Narysuj zależności przeciętnej ceny metra kwadratowego mieszkania w zależności
+od dzielnicy Wrocławia (stary podział na 5 dzielnic).
+ 
+### Głębia
+
+A co jeśli chce się zrobić coś innego, coś więcej? Gdzie szukać pomocy?
+
+Będziemy intensywnie korzystać dzisiaj z dwóch ,,ściągawek".
+
+1. Przetwarzanie danych https://github.com/rstudio/cheatsheets/raw/master/source/pdfs/data-transformation-cheatsheet.pdf
+2. Wizualizacja danych https://www.rstudio.com/wp-content/uploads/2016/11/ggplot2-cheatsheet-2.1.pdf
+
+Oberzyjmy je wspólnie.
+
+#### ggplot
+
+Wykres = dane + geometria + estetyka
+
+Zwizualizujemy teraz te same dane na kilka różnych sposób. 
+Nie będziemy się zajmować, póki co, estetyką.
+
+Dane o cenach mieszkań
+
+1. geom_bar ze średnią ceną
+2. geom_point ze średnią ceną
+3. geom_pointrange ze średnią ceną i zakresem takim, że 50 procent obserwacji się mieści.
+Krótka dygresja o kwartylach.
+4. geom_point - wszystkie mieszkania. użycie alpha
+5. geom_point dodanie koloru w zależności od innej zmiennej
+6. geom_violin - lepsze niż same punkty
+7. geom_boxplot - krótkie wytłumaczenie z czym to się je
+
+**Zadanie**
+
+Zbadaj w podobnym sposób zależność od innych zmiennych.
+
+#### dplyr
+
+1. Wybranie 5 najdroższych mieszkań
+2. Wybranie 3 najtańszych mieszkań w każdej dzielnicy
+3. Posortowanie po cenie
+4. Wybranie 5 losowych obserwacji - po co coś takiego robić?
+5. Wybranie wszystkich tańszych niż 3000 a droższych niż 2900 **between()**
+6. Ile mamy obserwacji **summarize(n())**
+7. Ile mamy dzielnic **summarize(n_distinct)**
+
+**Zadanie**
+
+
