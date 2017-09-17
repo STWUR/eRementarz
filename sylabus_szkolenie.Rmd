@@ -24,7 +24,7 @@ i z jakich innych pików da się ładować dane (xls i bezpośrednio z baz danyc
 2. Co się znajduje w danych? Funkcje summary i str. Napomknięcie o typach danych
 ,,liczba to nie to samo co ciąg znaków". Bez wchodzenia w szczegóły
 3. Co dalej zrobić z ramką danych? Podstawowe komendy dplyr - filter, select, mutate
-4. Wcyiągnięcie informacji z danych. Bardzo podobnie do SQL. Wszystko dzieje się
+4. Wyciągnięcie informacji z danych. Bardzo podobnie do SQL. Wszystko dzieje się
  w zgodzie z intuicją. Konstrukcja kodu jest niemal jak pisanie zdań w języku angielskim.
  5. group_by, summarize
  6. Przykład do policzenia średniej ceny w zależności od liczby pokojów
@@ -86,5 +86,3 @@ Zbadaj w podobnym sposób zależność od innych zmiennych.
 7. Ile mamy dzielnic **summarize(n_distinct)**
 
 **Zadanie**
-
-
