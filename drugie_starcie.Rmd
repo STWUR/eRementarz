@@ -1,0 +1,142 @@
+---
+title: "Drugie starcie, pierwsza krew"
+output: html_notebook
+---
+
+
+```{r, message=FALSE}
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+library(ggthemes)
+```
+
+Potrafimy już coś zrobić w R. Teraz zagłębimy się w przetwarzanie danych
+w dplyr. Co można zrobić? Opcji jest bardzo dużo, nie zdążymy wszystkiego poznać.
+Skąd brać informacje?
+
+* google (zwykle odpowiedzi na stack overflow)
+* dokumentacja
+* ,,ściągawka" https://github.com/rstudio/cheatsheets/raw/master/source/pdfs/data-transformation-cheatsheet.pdf
+
+## Jak wydobyć informacje z danych?
+
+<img src="schemat_przetwarzanie_danych.png">
+
+```{r wczytanie_danych}
+mieszkania <- read.csv("mieszkania_wroclaw_ceny.csv")
+```
+
+Najpierw sprawdźmy co w ogóle jest w tych danych
+
+```{r podstawowe_statystyki}
+dim(mieszkania)
+str(mieszkania)
+summary(mieszkania)
+head(mieszkania)
+```
+
+
+Co już znamy?
+
+```{r}
+mieszkania %>% 
+  group_by(dzielnica) %>%
+  summarise(sredni_metraz = mean(metraz))
+```
+
+Nauczymy się teraz przekształcać dane. Jak zauważyliśmy już wcześniej,
+składnia pakietu dplyr jest bardzo podobna do SQL.
+
+```{r}
+mieszkania %>% 
+	select(dzielnica, metraz, cena_m2) %>% #wybieramy zmienne
+	head
+```
+
+Jak przetwarzać zmienne w ramce danych? Służy do tego funkcja **mutate**
+
+```{r}
+mieszkania %>% 
+	mutate(czy_parter = pietro == 0)
+```
+
+Jaka jest średnia cena m2 w dzielnicach?
+
+```{r}
+mieszkania %>% 
+  group_by(dzielnica) %>%
+	summarize(cena_m2 = mean(cena_m2))
+```
+
+Chcemy je uszeregować od najniższej do najwyższej wartości
+
+Jaka jest średnia cena m2 w dzielnicach?
+
+```{r}
+mieszkania %>% 
+  group_by(dzielnica) %>%
+	summarize(cena_m2 = mean(cena_m2)) %>%
+  arrange(cena_m2)
+```
+
+Ile mamy ofert w poszczególnych dzielnicach
+
+```{r}
+mieszkania %>% 
+  group_by(dzielnica) %>%
+	summarize(liczba_ofert = n()) %>%
+  arrange(liczba_ofert)
+```
+
+Mogą nas interesować wartości ekstremalne, np. 5 z najwyższą ceną
+
+```{r}
+mieszkania %>% 
+  top_n(5, wt = cena_m2)
+```
+
+Jak to wychodzi w poszczególnych dzielnicach?
+
+Mogą nas interesować wartości ekstremalne, np. 5 z najwyższą ceną
+
+```{r}
+mieszkania %>% 
+  group_by(dzielnica) %>%
+  top_n(3, wt = cena_m2)
+```
+
+
+## Łączenie zbiorów danych
+
+```{r}
+ludnosc <- read.csv("data/ludnosc_wroclaw.csv")
+ludnosc
+```
+
+Chcemy połączyć te informacje z tabelą z mieszkaniami, czyli do wiersza 
+z każdym z mieszkań, chcemy dodać informację o liczbie mieszkańców.
+
+Zobaczmy jeszcze raz, jak wyglądają dane mieszkaniowe
+
+```{r}
+head(mieszkania)
+```
+
+
+Taką operację wykonujemy za pomocą funkcji **inner_join**. Chcemy, żeby
+kolumna *dzielnica* w ramce danych *mieszkania* odpowiadały kolumnie
+*Dzienica* w ramce danych *ludnosc*
+
+```{r}
+inner_join(mieszkania, ludnosc, by = c("dzielnica"="Dzielnica"))
+```
+
+
+
+Zadania:
+
+1. Wyświetl ofertę o najwyższej cenie za m2 poza Starym Miastem
+2. Jak jest średnia cena mieszkań większych niz 60 m2?
+3. Jaka jest przeciętna powierzchnia w zależności od piętra? Z czego może ona wynikać?
+4. Przygotuj zestawienie tego, 
