@@ -1,0 +1,52 @@
+---
+title: "Pierwsze kroki w R"
+output: ioslides_presentation
+---
+
+## Wczytanie danych
+
+Do **R** można łatwo wczytywać dane z arkuszy kalkulacyjnych (.csv., .xls, .odt).
+
+```{r}
+mieszkania <- read.csv("mieszkania_wroclaw_ceny.csv", 
+                       encoding = "UTF-8")
+```
+
+Do zmiennej *mieszkania* przypisaliśmy wynik funkcji *read.csv*.
+
+## Obiekty
+
+```{r}
+# wymiary tabeli
+dim(mieszkania)
+
+# pierwsze wiersze z tabeli
+head(mieszkania)
+```
+
+## Obiekty
+
+```{r}
+# podsumowanie tabeli
+summary(mieszkania)
+```
+
+## Tabele
+
+```{r}
+# pierwsza kolumna, wiersze od 5 do 10
+mieszkania[5:10, 1]
+
+# kolumny mozna tez wywolywac po nazwach
+mieszkania[5:10, "n_pokoj"]
+```
+
+## Różne typy danych
+
+```{r}
+# typ numeryczny (numeric)
+mieszkania[5:10, "n_pokoj"]
+
+# typ czynnikowy (factor)
+mieszkania[5:10, "dzielnica"]
+```

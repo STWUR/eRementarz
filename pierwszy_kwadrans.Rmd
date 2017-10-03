@@ -16,14 +16,14 @@ Dane znajdują się w pliku *mieszkania_wroclaw_ceny.csv*. Takie pliki do R
 wczytujemy prostym poleceniem.
 
 ```{r wczytanie_danych}
-mieszkania <- read.csv("mieszkania_wroclaw_ceny.csv")
+mieszkania <- read.csv("mieszkania_wroclaw_ceny.csv", encoding = "UTF-8")
 ```
 
 Co zrobiliśmy? Powiedzieliśmy, że chcemy przeczytać plik typu csv (*read.csv*)
 i to co wczytamy chcemy żeby było dostępne zawsze wtedy kiedy wpiszemy 
 *mieszkania*.
 
-Co się znajduję w naszych danych?
+Co się znajduje w naszych danych?
 
 ```{r}
 head(mieszkania)
@@ -131,4 +131,3 @@ ggplot(srednia_cena_pokoje, aes(x = n_pokoj, y = srednia_cena)) +
 
 Stwórz wizualizację, która pokazałaby średnią cenę metra kwadratowego mieszkania
 w zależności od tego w jakiej dzielnicy się ono znajduje.
-
