@@ -54,6 +54,9 @@ mieszkania %>%
 	head
 ```
 
+O co chodzi ze znaczkiem **%>%**, jest to tak zwany operator strumieniowy (pipe).
+To co jest po lewej stronie staje się pierwszym argumentem funkcji po prawej stronie.
+
 Jak przetwarzać zmienne w ramce danych? Służy do tego funkcja **mutate**
 
 ```{r}
@@ -129,7 +132,16 @@ kolumna *dzielnica* w ramce danych *mieszkania* odpowiadały kolumnie
 *Dzienica* w ramce danych *ludnosc*
 
 ```{r}
-inner_join(mieszkania, ludnosc, by = c("dzielnica"="Dzielnica"))
+
+```
+
+Mamy informację zarówno o mieszkaniach, jak i o dzielnicach, w których się znajdują.
+
+```{r}
+mieszkania %>%
+  group_by(dzielnica) %>%
+  summarise(liczba_ofert = n()) %>%
+  inner_join(ludnosc, by = c("dzielnica"="Dzielnica"))
 ```
 
 
@@ -139,4 +151,16 @@ Zadania:
 1. Wyświetl ofertę o najwyższej cenie za m2 poza Starym Miastem
 2. Jak jest średnia cena mieszkań większych niz 60 m2?
 3. Jaka jest przeciętna powierzchnia w zależności od piętra? Z czego może ona wynikać?
-4. Przygotuj zestawienie tego, 
+4. Ile ofert przypada na jednego mieszkańca w poszczególnych dzielnicach?
+
+
+```{r}
+mieszkania %>%
+  group_by(dzielnica) %>%
+  summarise(liczba_ofert = n()) %>%
+  inner_join(ludnosc, by = c("dzielnica"="Dzielnica")) %>%
+  mutate(liczba_ofert/liczba_mieszkancow)
+```
+
+Widzimy, które dzielnice mają bardziej charakter ,,lokalny", a które są
+w większym stopniu zamieszkane przez osoby przyjezdne.

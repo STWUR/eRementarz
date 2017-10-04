@@ -77,6 +77,22 @@ ungroup(final_dat) %>%
   facet_wrap(~ medium)
 
 
+#kartogram
+
+load("data/mapa_dzielnic.Rdata")
+
+plot_data <- dat %>%
+  group_by(dzielnica) %>%
+  summarise(cena_m2 = mean(cena_m2)) %>%
+  inner_join(granice_dzielnic, by=c("dzielnica"="id")) 
+
+ggplot(plot_data) +
+  geom_polygon(aes(x=long, y=lat, group = dzielnica, fill = cena_m2))
+
+ggplot(plot_data) +
+  geom_polygon(aes(x=long, y=lat, group = dzielnica, fill = cena_m2)) +
+  coord_map()
+
 # 1. Create a density plot for each pathotype and medium.
 
 thr_dat <- mutate(final_dat, thr = value > 0.07)
