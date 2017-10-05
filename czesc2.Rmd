@@ -8,8 +8,6 @@ output: ioslides_presentation
 ```{r, message=FALSE, warning = FALSE}
 library(dplyr)
 library(tidyr)
-library(ggplot2)
-library(ggthemes)
 ```
 
 
@@ -238,6 +236,25 @@ mieszkania %>%
   head
 ```
 
+## Zmienna utworzona przez warunek logiczny
+
+```{r}
+mieszkania %>%
+  mutate(pietro = if_else(pietro == 0, "parter",
+                          if_else(pietro == pietro_maks, "ostatnie_pietro", "inne")))
+```
+
+## Zmienna utworzona przez warunek logiczny
+
+```{r}
+mieszkania %>%
+  mutate(pietro = case_when(
+    pietro == 0 ~ "parter",
+    pietro == pietro_maks ~ "ostatnie_pietro",
+    TRUE ~ "inne"
+  ))
+```
+
 
 ## Zadania
 
@@ -247,3 +264,6 @@ się od średniej ceny $m^2$
 2. Wybierz losowo 10 mieszkań ze zbioru danych (funkcja **sample_n**)
 3. Jaka jest powierzchnia mieszkań do kupienia w stosunku do liczby mieszkańców
 w każdej dzielnicy?
+4. Stwórz zmienną *czy_duze*, która ma wartość TRUE jeśli mieszkanie ma więcej niż 50 metrów
+5. Stwórz zmienną *rodzaj_zabudowy*, której wartośći zależeć będą od tego czy budynek ma
+mniej niż 3 piętra, mniej niż 6 pięter, więcej niż 6 piętr
