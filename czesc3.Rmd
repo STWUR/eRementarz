@@ -1,0 +1,183 @@
+---
+title: "Trzecie starcie - wizualizacje"
+output: ioslides_presentation
+---
+
+## Ładowanie pakietów
+
+```{r, message=FALSE, warning = FALSE}
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+library(ggthemes)
+```
+
+## Przygotowanie danych
+
+```{r}
+mieszkania <- read.csv(file = "mieszkania_wroclaw_ceny.csv") %>% 
+  mutate(duze = metraz > 50,
+         pietro = ifelse(pietro == 0, "parter",
+                         ifelse(pietro == pietro_maks, "ostatnie_pietro",
+                                ifelse(pietro > 15, "wysoko",
+                                       ifelse(pietro_maks < 3, "niska_zabudowa", "inne")))),
+         pietro = factor(pietro),
+         pokoj = factor(ifelse(n_pokoj > 3, ">3", n_pokoj))) %>% 
+  filter(dzielnica != "Brak")
+```
+
+## Idea ggplot
+
+> * Podajemy jakie zmienne powinny się znaleźć na obu osiach
+> * Wybieramy jakiego rodzaju wykres chcemy (punkty, słupki itp)
+> * https://github.com/rstudio/cheatsheets/raw/master/data-visualization-2.1.pdf
+
+# Wykres punktowy
+
+## 
+
+```{r}
+ggplot(mieszkania, aes(x = dzielnica, y = cena_m2)) +
+  geom_point()
+```
+
+
+##
+
+Punktu nie nachodzą na siebie
+
+```{r}
+ggplot(mieszkania, aes(x = dzielnica, y = cena_m2)) +
+  geom_point(position = "jitter")
+```
+
+##
+
+Ustawienie punktów jest tutaj losowe
+
+```{r}
+set.seed(1410)
+ggplot(mieszkania, aes(x = dzielnica, y = cena_m2)) +
+  geom_point(position = "jitter")
+```
+
+
+
+# Facets - podziały
+
+## 
+
+Co jeśli chcemy zobaczyć rozkład punktów w grupach zależnych
+od liczby pokojów?
+
+```{r punty_facet_pokoj}
+ggplot(mieszkania, aes(x = dzielnica, y = cena_m2)) +
+  geom_point(position = "jitter") +
+  facet_wrap(~ pokoj)
+```
+
+## 
+
+```{r}
+ggplot(mieszkania, aes(x = dzielnica, y = cena_m2)) +
+  geom_point(position = "jitter") +
+  facet_wrap(~ pokoj, labeller = label_both)
+```
+
+## 
+
+```{r}
+ggplot(mieszkania, aes(x = dzielnica, y = cena_m2)) +
+  geom_point(position = "jitter") +
+  facet_wrap(~ pokoj + pietro, labeller = label_both)
+```
+
+## 
+
+
+```{r}
+ggplot(mieszkania, aes(x = dzielnica, y = cena_m2)) +
+  geom_point(position = "jitter") +
+  facet_grid(pietro ~ pokoj, labeller = label_both)
+```
+
+## 
+
+```{r}
+ggplot(mieszkania, aes(x = dzielnica, y = cena_m2)) +
+  geom_boxplot() +
+  facet_wrap(~ pokoj, labeller = label_both)
+```
+
+## 
+
+
+```{r}
+ggplot(mieszkania, aes(x = dzielnica, y = cena_m2, color = duze)) +
+  geom_point(position = "jitter") +
+  facet_grid(pietro ~ pokoj, labeller = label_both)
+```
+
+
+# Gęstość
+
+## 
+
+```{r}
+ggplot(mieszkania, aes(x = cena_m2)) +
+  geom_density()
+```
+
+## 
+
+```{r}
+ggplot(mieszkania, aes(x = cena_m2, fill = pokoj)) +
+  geom_density() 
+```
+
+## 
+
+```{r}
+ggplot(mieszkania, aes(x = cena_m2, fill = pokoj)) +
+  geom_density(alpha = 0.2) 
+```
+
+  
+# Mapy
+
+## Kartogrm
+
+```{r}
+load("data/mapa_dzielnic.Rdata")
+
+plot_data <- mieszkania %>%
+  group_by(dzielnica) %>%
+  summarise(cena_m2 = mean(cena_m2)) %>%
+  inner_join(granice_dzielnic, by=c("dzielnica"="id")) 
+```
+
+## 
+
+```{r, fig.height = 6, fig.width = 7}
+ggplot(plot_data) +
+  geom_polygon(aes(x=long, y=lat, group = dzielnica, fill = cena_m2))
+```
+
+##
+
+```{r}
+ggplot(plot_data) +
+  geom_polygon(aes(x=long, y=lat, group = dzielnica, fill = cena_m2)) +
+  coord_map()
+```
+
+# Dodatki
+
+## Bee swarm
+
+```{r, warning=FALSE, message=FALSE}
+library(ggbeeswarm)
+ggplot(mieszkania, aes(x = dzielnica, y = cena_m2, color = duze)) +
+  geom_quasirandom() +
+  facet_grid(pietro ~ pokoj, labeller = label_both)
+```
