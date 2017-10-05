@@ -17,7 +17,7 @@ library(ggthemes)
 
 * google (zwykle odpowiedzi na stack overflow)
 * dokumentacja
-* ,,ściągawka" https://github.com/rstudio/cheatsheets/raw/master/source/pdfs/data-transformation-cheatsheet.pdf
+* ,,ściągawka" https://github.com/rstudio/cheatsheets/raw/master/data-transformation.pdf
 * grupa STWUR na facebooku
 
 ## Jak wydobyć informacje z danych?
@@ -134,7 +134,7 @@ mieszkania %>%
   top_n(5, wt = cena_m2)
 ```
 
-## Jak to wychodzi w poszczególnych dzielnicach?
+## Najdroższe w dzielnicach
 
 ```{r top_w_dzielnicach}
 mieszkania %>% 
@@ -143,16 +143,37 @@ mieszkania %>%
   arrange(dzielnica, cena_m2)
 ```
 
+## Zadania:
+
+1. Wybierz mieszkania, których powierzchnia jest większa niż 60 metrów i przypisz je 
+do nowej zmiennej
+1. Posortuj mieszkania po liczbie pokojów
+2. Posortuj mieszkania ze Starego Miasta po metrażu
+1. Znajdź średnią cenę $m^2$ w całym Wrocławiu
+3. Stwórz nową zmienną opisującą cenę całkowitą mieszkania
+1. Wyświetl ofertę o najwyższej cenie za m2 poza Starym Miastem
+2. Jak jest średnia cena mieszkań większych niz 60 m2?
+3. Jaka jest przeciętna powierzchnia w zależności od piętra? Z czego może ona wynikać?
+
+# Łączenie zbiorów danych
 
 ## Łączenie zbiorów danych
+
+> * Oprócz przetwarzania jednego zbioru danych możemy chcieć go zestawić
+z innym zbiorem.
+> * Dla mieszkań, moglibyśmy chcieć zestawić je z liczbą mieszkańców
 
 ```{r}
 ludnosc <- read.csv("data/ludnosc_wroclaw.csv")
 ludnosc
 ```
 
-Chcemy połączyć te informacje z tabelą z mieszkaniami, czyli do wiersza 
-z każdym z mieszkań, chcemy dodać informację o liczbie mieszkańców.
+## 
+
+> * Chcemy połączyć te informacje z tabelą z mieszkaniami
+> * Każde mieszkanie chcemy połączyć z odpowiadającą dzielnicy
+informacją o liczbie mieszkańców
+> * W tym celu musimy znaleźć wspólną zmienną obu tych zbiorów danych
 
 ## Zobaczmy jeszcze raz, jak wyglądają dane mieszkaniowe
 
@@ -166,16 +187,17 @@ Taką operację wykonujemy za pomocą funkcji **inner_join**. Chcemy, żeby
 kolumna *dzielnica* w ramce danych *mieszkania* odpowiadały kolumnie
 *Dzienica* w ramce danych *ludnosc*
 
-```{r}
+```{r, warning=FALSE}
 mieszkania %>%
-  inner_join(ludnosc, by = c("dzielnica"="Dzielnica"))
+  inner_join(ludnosc, by = c("dzielnica"="Dzielnica")) %>%
+  head
 ```
 
 ## 
 
 Mamy informację zarówno o mieszkaniach, jak i o dzielnicach, w których się znajdują.
 
-```{r}
+```{r, warning=FALSE}
 mieszkania %>%
   group_by(dzielnica) %>%
   summarise(liczba_ofert = n()) %>%
@@ -186,23 +208,23 @@ mieszkania %>%
 
 ## Zadania:
 
-1. Wyświetl ofertę o najwyższej cenie za m2 poza Starym Miastem
-2. Jak jest średnia cena mieszkań większych niz 60 m2?
-3. Jaka jest przeciętna powierzchnia w zależności od piętra? Z czego może ona wynikać?
+1. Posortuj dzielnice po liczbie mieszkańców
 4. Ile ofert przypada na jednego mieszkańca w poszczególnych dzielnicach?
+3. Posortuj dzielnice po liczbie ofert przypadających na jednego mieszkańca
+4. Ile $m^2$ przypada na jednego mieszkańca w poszczególnych dzielnicach?
 
 ## 
 
-```{r}
+Widzimy, które dzielnice mają bardziej charakter ,,lokalny", a które są
+w większym stopniu zamieszkane przez osoby przyjezdne.
+
+```{r, warning=FALSE}
 mieszkania %>%
   group_by(dzielnica) %>%
   summarise(liczba_ofert = n()) %>%
   inner_join(ludnosc, by = c("dzielnica"="Dzielnica")) %>%
   mutate(liczba_ofert/liczba_mieszkancow)
 ```
-
-Widzimy, które dzielnice mają bardziej charakter ,,lokalny", a które są
-w większym stopniu zamieszkane przez osoby przyjezdne.
 
 ## Różnica ze średnią cena m2 w dzielnicy
 
@@ -215,3 +237,13 @@ mieszkania %>%
   select(dzielnica, cena_m2, srednia_cena_m2, roznica) %>%
   head
 ```
+
+
+## Zadania
+
+1. Znajdź różnicę w cenie $m^2$ między dzielnicami a średnią dla Wrocławia
+1. Znajdź w poszczególnych dzielnicach mieszkania, które najbardziej różnią
+się od średniej ceny $m^2$
+2. Wybierz losowo 10 mieszkań ze zbioru danych (funkcja **sample_n**)
+3. Jaka jest powierzchnia mieszkań do kupienia w stosunku do liczby mieszkańców
+w każdej dzielnicy?
