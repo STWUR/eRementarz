@@ -39,16 +39,6 @@ summary(mieszkania)
 
 <img src="gdocs.png" width="800">
 
-## Różne typy danych
-
-```{r}
-# typ numeryczny (numeric)
-mieszkania[5:10, "n_pokoj"]
-
-# typ czynnikowy (factor)
-mieszkania[5:10, "dzielnica"]
-```
-
 # Przetwarzanie danych
 
 ## Filtrowanie wierszy
@@ -130,8 +120,10 @@ ggplot(srednia_cena_pokoje, aes(x = n_pokoj, y = srednia_cena)) +
 
 ## Zadania
 
+1. Odfiltruj nieruchomości ze Śródmieścia i zapisz do nowej zmiennej
 1. Odfiltruj jedynie nieruchomości z Psiego Pola o liczbie pokojów większej niż 2
 2. Odfiltruj nieruchomości z Krzyków i wyświetl jedynie informacje o piętrze, na którym
 znajduje się mieszkanie i liczbie pięter w budynku
 3. Znajdź średnią cenę $m^2$ w każdej dzielnicy
 4. Narysuj wykres słupkowy, na którym przedstawisz cenę $m^2$ w każdej dzielnicy
+1. Znajdź średnią cenę $m^2$ w całym Wrocławiu
