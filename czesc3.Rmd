@@ -32,6 +32,19 @@ mieszkania <- read.csv(file = "mieszkania_wroclaw_ceny.csv") %>%
 > * Wybieramy jakiego rodzaju wykres chcemy (punkty, słupki itp)
 > * https://github.com/rstudio/cheatsheets/raw/master/data-visualization-2.1.pdf
 
+## Przypomnienie 
+
+```{r, message=FALSE}
+srednia_cena_pokoje <- mieszkania %>%
+  group_by(n_pokoj) %>%
+  summarise(srednia_cena = mean(cena_m2))
+
+ggplot(srednia_cena_pokoje, aes(x = n_pokoj, y = srednia_cena)) +
+  geom_bar(stat = "identity")
+```
+
+## Zadania
+
 # Wykres punktowy
 
 ## 
@@ -61,7 +74,7 @@ ggplot(mieszkania, aes(x = dzielnica, y = cena_m2)) +
   geom_point(position = "jitter")
 ```
 
-
+## Zadania
 
 # Facets - podziały
 
@@ -118,6 +131,7 @@ ggplot(mieszkania, aes(x = dzielnica, y = cena_m2, color = duze)) +
   facet_grid(pietro ~ pokoj, labeller = label_both)
 ```
 
+## Zadania
 
 # Gęstość
 
@@ -147,7 +161,7 @@ ggplot(mieszkania, aes(x = cena_m2, fill = pokoj)) +
 
 ## Kartogrm
 
-```{r}
+```{r, warning=FALSE}
 load("data/mapa_dzielnic.Rdata")
 
 plot_data <- mieszkania %>%
@@ -170,6 +184,8 @@ ggplot(plot_data) +
   geom_polygon(aes(x=long, y=lat, group = dzielnica, fill = cena_m2)) +
   coord_map()
 ```
+
+## Zadania
 
 # Dodatki
 
