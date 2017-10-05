@@ -1,27 +1,30 @@
 ---
 title: "Drugie starcie, pierwsza krew"
-output: html_notebook
+output: ioslides_presentation
 ---
 
+## Ładowanie pakietów
 
-```{r, message=FALSE}
+```{r, message=FALSE, warning = FALSE}
 library(dplyr)
 library(tidyr)
 library(ggplot2)
 library(ggthemes)
 ```
 
-Potrafimy już coś zrobić w R. Teraz zagłębimy się w przetwarzanie danych
-w dplyr. Co można zrobić? Opcji jest bardzo dużo, nie zdążymy wszystkiego poznać.
-Skąd brać informacje?
+
+## Skąd brać informacje?
 
 * google (zwykle odpowiedzi na stack overflow)
 * dokumentacja
 * ,,ściągawka" https://github.com/rstudio/cheatsheets/raw/master/source/pdfs/data-transformation-cheatsheet.pdf
+* grupa STWUR na facebooku
 
 ## Jak wydobyć informacje z danych?
 
 <img src="schemat_przetwarzanie_danych.png">
+
+## 
 
 ```{r wczytanie_danych}
 mieszkania <- read.csv("mieszkania_wroclaw_ceny.csv")
@@ -29,11 +32,20 @@ mieszkania <- read.csv("mieszkania_wroclaw_ceny.csv")
 
 Najpierw sprawdźmy co w ogóle jest w tych danych
 
-```{r podstawowe_statystyki}
-dim(mieszkania)
+```{r struktura}
 str(mieszkania)
-summary(mieszkania)
+```
+
+##
+
+```{r}
 head(mieszkania)
+```
+
+##
+
+```{r podstawowe_statystyki}
+summary(mieszkania)
 ```
 
 ## Różne typy danych
@@ -46,16 +58,34 @@ mieszkania[5:10, "n_pokoj"]
 mieszkania[5:10, "dzielnica"]
 ```
 
-Co już znamy?
+## Co już znamy?
 
 ```{r}
 mieszkania %>% 
-  group_by(dzielnica) %>%
-  summarise(sredni_metraz = mean(metraz))
+  group_by(dzielnica) %>% #grupujemy obserwacje
+  summarise(sredni_metraz = mean(metraz)) #osobno w każdej grupie liczymy średnią
 ```
 
-Nauczymy się teraz przekształcać dane. Jak zauważyliśmy już wcześniej,
-składnia pakietu dplyr jest bardzo podobna do SQL.
+## Co już znamy?
+
+```{r}
+mieszkania %>%
+  filter(dzielnica == "Śródmieście") %>% #filtrujemy wiersze
+  select(dzielnica, pietro, cena_m2) %>% #wybieramy zmienne
+	head
+```
+
+# Przekształcanie danych
+
+## Wyfiltrujemy dane z brakiem informacji o dzielnicy
+
+```{r}
+mieszkania <- mieszkania %>%
+  filter(! dzielnica == "Brak")
+```
+
+
+##
 
 ```{r}
 mieszkania %>% 
@@ -66,58 +96,51 @@ mieszkania %>%
 O co chodzi ze znaczkiem **%>%**, jest to tak zwany operator strumieniowy (pipe).
 To co jest po lewej stronie staje się pierwszym argumentem funkcji po prawej stronie.
 
-Jak przetwarzać zmienne w ramce danych? Służy do tego funkcja **mutate**
+## Jak tworzyć nowe zmienne?
 
-```{r}
+Służy do tego funkcja **mutate**
+
+```{r mutate_parter}
 mieszkania %>% 
-	mutate(czy_parter = pietro == 0)
-```
-
-Jaka jest średnia cena m2 w dzielnicach?
-
-```{r}
-mieszkania %>% 
-  group_by(dzielnica) %>%
-	summarize(cena_m2 = mean(cena_m2))
+	mutate(czy_parter = pietro == 0) %>%
+  select(dzielnica, pietro, czy_parter) %>%
+  head(11)
 ```
 
 # Sortowanie
 
-Chcemy je uszeregować od najniższej do najwyższej wartości
+## Chcemy je uszeregować od najniższej do najwyższej wartości
 
-Jaka jest średnia cena m2 w dzielnicach?
-
-```{r}
+```{r dzielnice_posortowane}
 mieszkania %>% 
   group_by(dzielnica) %>%
 	summarize(cena_m2 = mean(cena_m2)) %>%
   arrange(cena_m2)
 ```
 
-Ile mamy ofert w poszczególnych dzielnicach
+## Ile mamy ofert w poszczególnych dzielnicach
 
-```{r}
+```{r zliczanie_obserwacji}
 mieszkania %>% 
   group_by(dzielnica) %>%
 	summarize(liczba_ofert = n()) %>%
   arrange(liczba_ofert)
 ```
 
-Mogą nas interesować wartości ekstremalne, np. 5 z najwyższą ceną
+## Mogą nas interesować wartości ekstremalne, np. 5 z najwyższą ceną
 
 ```{r}
 mieszkania %>% 
   top_n(5, wt = cena_m2)
 ```
 
-Jak to wychodzi w poszczególnych dzielnicach?
+## Jak to wychodzi w poszczególnych dzielnicach?
 
-Mogą nas interesować wartości ekstremalne, np. 5 z najwyższą ceną
-
-```{r}
+```{r top_w_dzielnicach}
 mieszkania %>% 
   group_by(dzielnica) %>%
-  top_n(3, wt = cena_m2)
+  top_n(2, wt = cena_m2) %>% ungroup %>%
+  arrange(dzielnica, cena_m2)
 ```
 
 
@@ -131,20 +154,24 @@ ludnosc
 Chcemy połączyć te informacje z tabelą z mieszkaniami, czyli do wiersza 
 z każdym z mieszkań, chcemy dodać informację o liczbie mieszkańców.
 
-Zobaczmy jeszcze raz, jak wyglądają dane mieszkaniowe
+## Zobaczmy jeszcze raz, jak wyglądają dane mieszkaniowe
 
 ```{r}
 head(mieszkania)
 ```
 
+## 
 
 Taką operację wykonujemy za pomocą funkcji **inner_join**. Chcemy, żeby
 kolumna *dzielnica* w ramce danych *mieszkania* odpowiadały kolumnie
 *Dzienica* w ramce danych *ludnosc*
 
 ```{r}
-
+mieszkania %>%
+  inner_join(ludnosc, by = c("dzielnica"="Dzielnica"))
 ```
+
+## 
 
 Mamy informację zarówno o mieszkaniach, jak i o dzielnicach, w których się znajdują.
 
@@ -157,13 +184,14 @@ mieszkania %>%
 
 
 
-Zadania:
+## Zadania:
 
 1. Wyświetl ofertę o najwyższej cenie za m2 poza Starym Miastem
 2. Jak jest średnia cena mieszkań większych niz 60 m2?
 3. Jaka jest przeciętna powierzchnia w zależności od piętra? Z czego może ona wynikać?
 4. Ile ofert przypada na jednego mieszkańca w poszczególnych dzielnicach?
 
+## 
 
 ```{r}
 mieszkania %>%
@@ -175,3 +203,15 @@ mieszkania %>%
 
 Widzimy, które dzielnice mają bardziej charakter ,,lokalny", a które są
 w większym stopniu zamieszkane przez osoby przyjezdne.
+
+## Różnica ze średnią cena m2 w dzielnicy
+
+```{r srednia}
+mieszkania %>% 
+  group_by(dzielnica) %>%
+	mutate(srednia_cena_m2 = mean(cena_m2)) %>%
+  ungroup %>%
+  mutate(roznica = cena_m2 - srednia_cena_m2) %>%
+  select(dzielnica, cena_m2, srednia_cena_m2, roznica) %>%
+  head
+```
