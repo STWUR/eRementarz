@@ -1,6 +1,9 @@
 ---
 title: "Trzecie starcie - wizualizacje"
-output: ioslides_presentation
+date: "7 października 2017"
+output: 
+  ioslides_presentation:
+    logo: banner.png
 ---
 
 ## Ładowanie pakietów
@@ -35,11 +38,43 @@ mieszkania <- read.csv(file = "data/mieszkania_wroclaw_ceny.csv") %>%
 
 ```{r, message=FALSE}
 srednia_cena_pokoje <- mieszkania %>%
-  group_by(n_pokoj) %>%
-  summarise(srednia_cena = mean(cena_m2))
-
+  group_by(n_pokoj) %>% summarise(srednia_cena = mean(cena_m2))
 ggplot(srednia_cena_pokoje, aes(x = n_pokoj, y = srednia_cena)) +
   geom_bar(stat = "identity")
+```
+
+##
+
+> * Jeśli pominiemy paramter *stat=identity* to R zliczby wystąpienia
+
+```{r}
+ggplot(mieszkania, aes(x = n_pokoj)) +
+  geom_bar()
+```
+
+
+## Zadania
+
+1. Stwórz wykres słupkowy pokazujący jak średni metraż zależy od liczby pokojów
+2. Dodaj wypełnienie (*fill*) kolorem zależnym od zmiennej *n_pokoj*
+3. Stwórz wykres pokazujący ile jest ofert w zależności od dzielnicy
+4. Dodaj wypełnienie zależne od zmiennej *pokoj*
+
+##
+
+```{r}
+ggplot(mieszkania, aes(x = dzielnica, y = ..count..)) +
+  geom_bar(aes(fill = pokoj), position = "stack")
+```
+
+## 
+
+> * Aby móc łatwo porównać skalujemy każdy słupek do tej samej wysokości
+> * Gdzie mamy największe, a gdzie najmniejsze mieszkania?
+
+```{r barplot_fill}
+ggplot(mieszkania, aes(x = dzielnica, y = ..count..)) +
+  geom_bar(aes(fill = pokoj), position = "fill")
 ```
 
 # Wykres punktowy
@@ -94,6 +129,14 @@ liczbą pokojów
 # Facets - podziały
 
 ## 
+
+Chcemy:
+
+> * zobaczyć jakie są ceny $m^2$ w grupach zależnych od dzielnicy
+> * porównać średni metraż w zależności od piętra i liczby pokojów
+> * zestawić ze sobą wizulizacje w grupach wyznaczonych przez zmienne
+
+##
 
 Co jeśli chcemy zobaczyć rozkład punktów w grupach zależnych
 od liczby pokojów?
@@ -152,7 +195,7 @@ ggplot(mieszkania, aes(x = dzielnica, y = cena_m2, color = duze)) +
 
 ## Gęstość
 
-> * Zorientowanie się w rozkładzie
+> * Zorientowanie jakich wartości można się spodziewać
 > * Odporne na małe wahania
 
 ```{r}
@@ -162,19 +205,56 @@ ggplot(mieszkania, aes(x = cena_m2)) +
 
 ## 
 
+> * Podział ze względu na zmienną *pokoj*
+> * Mało czytelny ze względu na zbyt mocne kolory
+
 ```{r}
 ggplot(mieszkania, aes(x = cena_m2, fill = pokoj)) +
-  geom_density() 
+  geom_density()
+```
+
+## 
+
+> * Dodanie przezroczystości
+
+```{r}
+ggplot(mieszkania, aes(x = cena_m2, fill = pokoj)) +
+  geom_density(alpha = 0.2) 
 ```
 
 ## 
 
 ```{r}
-ggplot(mieszkania, aes(x = cena_m2, fill = n_pokoj)) +
-  geom_density(alpha = 0.2) 
+ggplot(mieszkania, aes(x = cena_m2, fill = pokoj)) +
+  geom_density() +
+  facet_wrap(~pokoj, ncol=1)
 ```
 
-  
+## 
+
+> * Parametr adjust odpowiada za ,,chropowatość"
+
+```{r}
+ggplot(mieszkania, aes(x = cena_m2, fill = pokoj)) +
+  geom_density(adjust = 0.5) +
+  facet_wrap(~pokoj, ncol=1)
+```
+
+## Zadania
+
+1. Zwizualizuj jak cena $m^2$ zależy od dzielnicy. Jakie płyną stąd wnioski?
+2. Zwizualizuj jak metraż zależy od liczby pokojów
+3. Zobacz jak wyglądają powyższe wykresy w zależności od wartości parametru *adjust*
+3. (opcjonalnie) Dla większej przejrzystości spróbuj ograniczyć możliwe wartości na osi x
+**xlim(min, max)**
+
+
+```{r}
+ggplot(mieszkania, aes(x = metraz, fill = pokoj)) +
+  geom_density(adjust = 2) +
+  facet_wrap(~pokoj, ncol=1)
+```
+
 # Mapy
 
 ## Kartogrm
@@ -217,7 +297,7 @@ dzielnicach
 
 > * Zamiast wymyślać koło...
 > * **ggthemes**
-> * scale_fill_wsj
+> * scale_fill_
 
 ```{r}
 library(ggthemes)
