@@ -1,9 +1,15 @@
 ---
 title: "Drugie starcie, pierwsza krew"
 date: "7 października 2017"
+<<<<<<< HEAD
 author: "Piotr Sobczyk, Michał Burdukiewicz, Jakub Kwiecień"
 output: 
   ioslides_presentation
+=======
+output: 
+  ioslides_presentation:
+    logo: banner.png
+>>>>>>> 1c0ee1c513cb8e3316edbe01b6e38a43c008f90f
 ---
 
 ##
@@ -244,7 +250,7 @@ mieszkania_60 %>%
 ```{r}
 mieszkania %>%
   group_by(pietro) %>%
-  summarise(srednia_cena = mean(cena_m2))
+  summarise(sredni_metraz = mean(metraz))
 ```
 
 # Łączenie zbiorów danych
@@ -303,7 +309,7 @@ mieszkania %>%
 1. Posortuj dzielnice po liczbie mieszkańców
 4. Ile ofert przypada na jednego mieszkańca w poszczególnych dzielnicach?
 3. Posortuj dzielnice po liczbie ofert przypadających na jednego mieszkańca
-4. Ile $m^2$ mieszkań do kupienia przypada na jednego mieszkańca w poszczególnych dzielnicach?
+4. Ile pokojów do kupienia przypada na jednego mieszkańca w poszczególnych dzielnicach?
 5. Wylicz średnią cenę $m^2$ w dzielnicy i przypisz do nowej zmiennej.
 6. Połącz średnią cenę $m^2$ w dzielnicy z danymi o mieszkaniach i dla każdego mieszkania wylicz różnicę ze średnią ceną.
 
@@ -337,14 +343,20 @@ mieszkania %>%
   arrange(liczba_ofert_na_mieszkanca)
 ```
 
-## Ile $m^2$ mieszkań do kupienia przypada na jednego mieszkańca w poszczególnych dzielnicach?
+## Ile pokojów do kupienia przypada na jednego mieszkańca w poszczególnych dzielnicach?
 
 ```{r}
 mieszkania %>%
   group_by(dzielnica) %>%
+<<<<<<< HEAD
   summarise(metraz = sum(metraz)) %>%
   inner_join(ludnosc, by = c("dzielnica"="Dzielnica")) %>%
   mutate(m2_na_mieszkanca = metraz/liczba_mieszkancow/1000)
+=======
+  summarise(liczba_pokojow = sum(n_pokoj)) %>%
+  inner_join(ludnosc, by = c("dzielnica"="Dzielnica")) %>%
+  mutate(pokojow_na_mieszkanca = liczba_pokojow/liczba_mieszkancow)
+>>>>>>> 1c0ee1c513cb8e3316edbe01b6e38a43c008f90f
 ```
 
 ## Wylicz średnią cenę $m^2$ w dzielnicy i przypisz do nowej zmiennej.
@@ -448,8 +460,24 @@ mieszkania %>%
 ## Wybierz losowo 10 mieszkań ze zbioru danych (funkcja **sample_n**)
 
 ```{r}
+<<<<<<< HEAD
 mieszkania %>%
   sample_n(10)
+=======
+set.seed(23)
+mieszkania %>%
+  sample_n(10)
+```
+
+## Jaka jest powierzchnia mieszkań do kupienia w stosunku do liczby mieszkańców w każdej dzielnicy?
+
+```{r}
+mieszkania %>%
+  group_by(dzielnica) %>%
+  summarise(laczna_powierzchnia = sum(metraz)) %>%
+  inner_join(ludnosc, by = c("dzielnica"="Dzielnica")) %>%
+  mutate(laczna_powierzchnia/liczba_mieszkancow)
+>>>>>>> 1c0ee1c513cb8e3316edbe01b6e38a43c008f90f
 ```
 
 ## Stwórz zmienną *czy_duze*, która ma wartość TRUE jeśli mieszkanie ma więcej niż 75 metrów
@@ -457,16 +485,28 @@ mieszkania %>%
 ```{r}
 mieszkania %>%
   mutate(czy_duze = metraz > 75) %>%
+<<<<<<< HEAD
   select(metraz, czy_duze)
+=======
+  head
+>>>>>>> 1c0ee1c513cb8e3316edbe01b6e38a43c008f90f
 ```
 
 ## Stwórz zmienną *rodzaj_zabudowy*, o wartościach: "mniej niż 3 piętra", "3 do 6 pięter", "ponad 6 pięter".
 
 ```{r}
 mieszkania %>%
+<<<<<<< HEAD
   mutate(rodzaj_zabudowy = case_when(pietro_maks < 3 ~ "mniej niż 3 piętra",
                                      pietro_maks <= 6 ~ "3 do 6 pięter",
                                      TRUE ~ "ponad 6 pięter")) %>%
   select(pietro_maks, rodzaj_zabudowy)
+=======
+  mutate(rodzaj_zabudowy = case_when(
+    pietro_maks < 3 ~ "mniej niż 3 piętra",
+    pietro_maks < 6 ~ "3 do 6 pięter",
+    TRUE ~ "ponad 6 pięter"
+  )) %>% head
+>>>>>>> 1c0ee1c513cb8e3316edbe01b6e38a43c008f90f
 ```
 
