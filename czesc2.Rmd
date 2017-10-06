@@ -78,9 +78,9 @@ mieszkania %>%
 
 ## Co już znamy?
 
-```{r}
+```{r, warning=FALSE}
 mieszkania %>%
-  filter(dzielnica == "Śródmieście") %>% #filtrujemy wiersze
+  filter(dzielnica == "Srodmiescie") %>% #filtrujemy wiersze
   select(dzielnica, pietro, cena_m2) %>% #wybieramy zmienne
 	head
 ```
@@ -112,7 +112,7 @@ Służy do tego funkcja **mutate**
 
 ```{r mutate_parter}
 mieszkania %>% 
-	mutate(czy_parter = pietro == 0) %>%
+	mutate(czy_parter = (pietro == 0) ) %>%
   select(dzielnica, pietro, czy_parter) %>%
   head(11)
 ```
