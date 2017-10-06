@@ -117,6 +117,15 @@ mieszkania %>%
   head(11)
 ```
 
+## Jak tworzyć nowe zmienne?
+
+```{r mutate_wysoki_budynek}
+mieszkania %>% 
+	mutate(czy_wysoki_budynek = (pietro_maks > 5) ) %>%
+  select(dzielnica, pietro_maks, czy_wysoki_budynek) %>%
+  head(9)
+```
+
 # Sortowanie
 
 ## Chcemy je uszeregować od najniższej do najwyższej wartości
@@ -197,7 +206,7 @@ Taką operację wykonujemy za pomocą funkcji **inner_join**. Chcemy, żeby
 kolumna *dzielnica* w ramce danych *mieszkania* odpowiadały kolumnie
 *Dzienica* w ramce danych *ludnosc*
 
-```{r, warning=FALSE}
+```{r join_ludnosc_mieszkania, warning=FALSE}
 mieszkania %>%
   inner_join(ludnosc, by = c("dzielnica"="Dzielnica")) %>%
   head
@@ -221,12 +230,12 @@ mieszkania %>%
 1. Posortuj dzielnice po liczbie mieszkańców
 4. Ile ofert przypada na jednego mieszkańca w poszczególnych dzielnicach?
 3. Posortuj dzielnice po liczbie ofert przypadających na jednego mieszkańca
-4. Ile $m^2$ przypada na jednego mieszkańca w poszczególnych dzielnicach?
+4. Ile $m^2$ mieszkań do kupienia przypada na jednego mieszkańca w poszczególnych dzielnicach?
 
 ## 
 
-Widzimy, które dzielnice mają bardziej charakter ,,lokalny", a które są
-w większym stopniu zamieszkane przez osoby przyjezdne.
+Możemy zbadać, które dzielnice mają bardziej charakter ,,lokalny", 
+a w których ludność szybciej się zmienia
 
 ```{r, warning=FALSE}
 mieszkania %>%
@@ -248,15 +257,17 @@ mieszkania %>%
   head
 ```
 
-## Zmienna utworzona przez warunek logiczny
+## Zmienna z warunku logicznego
 
 ```{r}
 mieszkania %>%
   mutate(pietro = if_else(pietro == 0, "parter",
-                          if_else(pietro == pietro_maks, "ostatnie_pietro", "inne")))
+                          if_else(pietro == pietro_maks, "ostatnie_pietro", 
+                                  "inne"))) %>%
+  head
 ```
 
-## Zmienna utworzona przez warunek logiczny
+## Zmienna z warunku logicznego
 
 ```{r}
 mieszkania %>%
@@ -264,7 +275,8 @@ mieszkania %>%
     pietro == 0 ~ "parter",
     pietro == pietro_maks ~ "ostatnie_pietro",
     TRUE ~ "inne"
-  ))
+  )) %>%
+  head
 ```
 
 
