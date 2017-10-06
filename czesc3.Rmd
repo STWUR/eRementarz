@@ -13,6 +13,7 @@ library(dplyr)
 library(tidyr)
 library(ggplot2)
 library(ggthemes)
+knitr::opts_chunk$set(fig.height = 3)
 ```
 
 ## Przygotowanie danych
@@ -147,9 +148,15 @@ ggplot(mieszkania, aes(x = dzielnica, y = cena_m2)) +
   facet_wrap(~ pokoj)
 ```
 
+##
+
+Facets pozwalają wizualizować dane rozdzielone względem wartości określonego parametru.
+
 ## 
 
-```{r}
+Argument *labeller* pozwala na automatyczne nazywanie podwykresów.
+
+```{rfig.height=4.2}
 ggplot(mieszkania, aes(x = dzielnica, y = cena_m2)) +
   geom_point(position = "jitter") +
   facet_wrap(~ pokoj, labeller = label_both)
@@ -157,7 +164,9 @@ ggplot(mieszkania, aes(x = dzielnica, y = cena_m2)) +
 
 ## 
 
-```{r}
+Operator + pozwala na łącznie parametrów względem których dzielimy dane.
+
+```{rfig.height=4.2}
 ggplot(mieszkania, aes(x = dzielnica, y = cena_m2)) +
   geom_point(position = "jitter") +
   facet_wrap(~ pokoj + pietro, labeller = label_both)
@@ -165,8 +174,9 @@ ggplot(mieszkania, aes(x = dzielnica, y = cena_m2)) +
 
 ## 
 
+facet_grid układa podwykresy w macierz, gdzie wartości dwóch parametrów definiują rzędy i kolumny.
 
-```{r}
+```{rfig.height=4.2}
 ggplot(mieszkania, aes(x = dzielnica, y = cena_m2)) +
   geom_point(position = "jitter") +
   facet_grid(pietro ~ pokoj, labeller = label_both)
@@ -174,7 +184,9 @@ ggplot(mieszkania, aes(x = dzielnica, y = cena_m2)) +
 
 ## 
 
-```{r}
+Facets mogą być wykorzystywane z dowolnym typem wykresów.
+
+```{rfig.height=4.2}
 ggplot(mieszkania, aes(x = dzielnica, y = cena_m2)) +
   geom_boxplot() +
   facet_wrap(~ pokoj, labeller = label_both)
@@ -183,13 +195,17 @@ ggplot(mieszkania, aes(x = dzielnica, y = cena_m2)) +
 ## 
 
 
-```{r}
+```{rfig.height=4.2}
 ggplot(mieszkania, aes(x = dzielnica, y = cena_m2, color = duze)) +
   geom_point(position = "jitter") +
   facet_grid(pietro ~ pokoj, labeller = label_both)
 ```
 
 ## Zadania
+
+1. Narysuj wykres punktowy przedstawiający zależność ceny $m^2$ od liczby pokojów w podziale na dzielnice.
+1. Narysuj wykres pudełkowy przedstawiający zależność ceny $m^2$ od liczby pokojów w zależności od dzielnicy i piętra. Wykorzystaj facet_grid. 
+
 
 # Gęstość
 
