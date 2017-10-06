@@ -232,7 +232,7 @@ mieszkania[5:10, &quot;dzielnica&quot;]</pre>
 ## 5 Srodmiescie  88.00    5216
 ## 6      Krzyki  50.00    5600</pre>
 
-<p>O co chodzi ze znaczkiem <strong>%&gt;%</strong>, jest to tak zwany operator strumieniowy (pipe). To co jest po lewej stronie staje się pierwszym argumentem funkcji po prawej stronie.</p>
+<p>O co chodzi ze znaczkiem &quot;<strong>%&gt;%</strong>&quot;? Jest to tak zwany operator strumieniowy (pipe). To co jest po lewej stronie staje się pierwszym argumentem funkcji po prawej stronie.</p>
 
 </article></slide><slide class=''><hgroup><h2>Jak tworzyć nowe zmienne?</h2></hgroup><article  id="jak-tworzyc-nowe-zmienne">
 
@@ -276,7 +276,7 @@ mieszkania[5:10, &quot;dzielnica&quot;]</pre>
 
 </article></slide><slide class='segue dark nobackground level1'><hgroup class = 'auto-fadein'><h2>Sortowanie</h2></hgroup><article  id="sortowanie">
 
-</article></slide><slide class=''><hgroup><h2>Chcemy je uszeregować od najniższej do najwyższej wartości</h2></hgroup><article  id="chcemy-je-uszeregowac-od-najnizszej-do-najwyzszej-wartosci">
+</article></slide><slide class=''><hgroup><h2>Chcemy uszeregować dzielnice od najniższej do najwyższej ceny za metr</h2></hgroup><article  id="chcemy-uszeregowac-dzielnice-od-najnizszej-do-najwyzszej-ceny-za-metr">
 
 <pre class = 'prettyprint lang-r'>mieszkania %&gt;% 
   group_by(dzielnica) %&gt;%
@@ -292,21 +292,21 @@ mieszkania[5:10, &quot;dzielnica&quot;]</pre>
 ## 4       Krzyki 6124.298
 ## 5 Stare Miasto 7645.819</pre>
 
-</article></slide><slide class=''><hgroup><h2>Ile mamy ofert w poszczególnych dzielnicach</h2></hgroup><article  id="ile-mamy-ofert-w-poszczegolnych-dzielnicach">
+</article></slide><slide class=''><hgroup><h2>Ile mamy ofert w poszczególnych dzielnicach (uszeregowane malejąco)</h2></hgroup><article  id="ile-mamy-ofert-w-poszczegolnych-dzielnicach-uszeregowane-malejaco">
 
 <pre class = 'prettyprint lang-r'>mieszkania %&gt;% 
   group_by(dzielnica) %&gt;%
     summarize(liczba_ofert = n()) %&gt;%
-  arrange(liczba_ofert)</pre>
+  arrange(desc(liczba_ofert))</pre>
 
 <pre >## # A tibble: 5 x 2
 ##      dzielnica liczba_ofert
 ##         &lt;fctr&gt;        &lt;int&gt;
-## 1    Psie Pole          688
-## 2 Stare Miasto          773
+## 1       Krzyki         2021
+## 2    Fabryczna         1370
 ## 3  Srodmiescie          999
-## 4    Fabryczna         1370
-## 5       Krzyki         2021</pre>
+## 4 Stare Miasto          773
+## 5    Psie Pole          688</pre>
 
 </article></slide><slide class=''><hgroup><h2>Mogą nas interesować wartości ekstremalne, np. 5 z najwyższą ceną</h2></hgroup><article  id="moga-nas-interesowac-wartosci-ekstremalne-np.-5-z-najwyzsza-cena">
 
@@ -347,10 +347,10 @@ mieszkania[5:10, &quot;dzielnica&quot;]</pre>
 <li>Wybierz mieszkania, których powierzchnia jest większa niż 60 metrów i przypisz je do nowej zmiennej</li>
 <li>Posortuj mieszkania po liczbie pokojów</li>
 <li>Posortuj mieszkania ze Starego Miasta po metrażu</li>
-<li>Znajdź średnią cenę \(m^2\) w całym Wrocławiu</li>
+<li>Znajdź średnią i medianę ceny \(m^2\) w całym Wrocławiu</li>
 <li>Stwórz nową zmienną opisującą cenę całkowitą mieszkania</li>
-<li>Wyświetl ofertę o najwyższej cenie za m2 poza Starym Miastem</li>
-<li>Jak jest średnia cena mieszkań większych niz 60 m2?</li>
+<li>Wyświetl ofertę o najwyższej cenie za \(m^2\) poza Starym Miastem</li>
+<li>Jak jest średnia cena mieszkań większych niz 60 \(m^2\)?</li>
 <li>Jaka jest przeciętna powierzchnia w zależności od piętra? Z czego może ona wynikać?</li>
 </ol>
 
@@ -441,6 +441,8 @@ ludnosc</pre>
 <li>Ile ofert przypada na jednego mieszkańca w poszczególnych dzielnicach?</li>
 <li>Posortuj dzielnice po liczbie ofert przypadających na jednego mieszkańca</li>
 <li>Ile \(m^2\) mieszkań do kupienia przypada na jednego mieszkańca w poszczególnych dzielnicach?</li>
+<li>Wylicz średnią cenę \(m^2\) w dzielnicy i przypisz do nowej zmiennej.</li>
+<li>Połącz średnią cenę \(m^2\) w dzielnicy z danymi o mieszkaniach i dla każdego mieszkania wylicz różnicę ze średnią ceną.</li>
 </ol>
 
 </article></slide><slide class=''><hgroup><h2></h2></hgroup><article  id="section-8">
@@ -463,7 +465,7 @@ ludnosc</pre>
 ## 5 Stare Miasto          773               52.5
 ## # ... with 1 more variables: `liczba_ofert/liczba_mieszkancow` &lt;dbl&gt;</pre>
 
-</article></slide><slide class=''><hgroup><h2>Różnica ze średnią cena m2 w dzielnicy</h2></hgroup><article  id="roznica-ze-srednia-cena-m2-w-dzielnicy">
+</article></slide><slide class=''><hgroup><h2>Różnica ze średnią cena m2 w dzielnicy (bez łączenia zbiorów!)</h2></hgroup><article  id="roznica-ze-srednia-cena-m2-w-dzielnicy-bez-aczenia-zbiorow">
 
 <pre class = 'prettyprint lang-r'>mieszkania %&gt;% 
   group_by(dzielnica) %&gt;%
@@ -471,23 +473,24 @@ ludnosc</pre>
   ungroup %&gt;%
   mutate(roznica = cena_m2 - srednia_cena_m2) %&gt;%
   select(dzielnica, cena_m2, srednia_cena_m2, roznica) %&gt;%
-  head</pre>
+  head(5)</pre>
 
-<pre >## # A tibble: 6 x 4
+<pre >## # A tibble: 5 x 4
 ##     dzielnica cena_m2 srednia_cena_m2   roznica
 ##        &lt;fctr&gt;   &lt;int&gt;           &lt;dbl&gt;     &lt;dbl&gt;
 ## 1      Krzyki    5270        6124.298 -854.2984
 ## 2   Psie Pole    6687        5427.927 1259.0727
 ## 3 Srodmiescie    6731        6062.439  668.5606
 ## 4      Krzyki    5525        6124.298 -599.2984
-## 5 Srodmiescie    5216        6062.439 -846.4394
-## 6      Krzyki    5600        6124.298 -524.2984</pre>
+## 5 Srodmiescie    5216        6062.439 -846.4394</pre>
 
 </article></slide><slide class=''><hgroup><h2>Zmienna z warunku logicznego</h2></hgroup><article  id="zmienna-z-warunku-logicznego">
 
 <pre class = 'prettyprint lang-r'>mieszkania %&gt;%
-  mutate(pietro = if_else(pietro == 0, &quot;parter&quot;,
-                          if_else(pietro == pietro_maks, &quot;ostatnie_pietro&quot;, 
+  mutate(pietro = if_else(pietro == 0, 
+                          &quot;parter&quot;,
+                          if_else(pietro == pietro_maks, 
+                                  &quot;ostatnie_pietro&quot;, 
                                   &quot;inne&quot;))) %&gt;%
   head</pre>
 
@@ -524,8 +527,8 @@ ludnosc</pre>
 <li>Znajdź w poszczególnych dzielnicach mieszkania, które najbardziej różnią się od średniej ceny \(m^2\)</li>
 <li>Wybierz losowo 10 mieszkań ze zbioru danych (funkcja <strong>sample_n</strong>)</li>
 <li>Jaka jest powierzchnia mieszkań do kupienia w stosunku do liczby mieszkańców w każdej dzielnicy?</li>
-<li>Stwórz zmienną <em>czy_duze</em>, która ma wartość TRUE jeśli mieszkanie ma więcej niż 50 metrów</li>
-<li>Stwórz zmienną <em>rodzaj_zabudowy</em>, której wartośći zależeć będą od tego czy budynek ma mniej niż 3 piętra, mniej niż 6 pięter, więcej niż 6 piętr</li>
+<li>Stwórz zmienną <em>czy_duze</em>, która ma wartość TRUE jeśli mieszkanie ma więcej niż 75 metrów</li>
+<li>Stwórz zmienną <em>rodzaj_zabudowy</em>, o wartościach: &quot;mniej niż 3 piętra&quot;, &quot;3 do 6 pięter&quot;, &quot;ponad 6 pięter&quot;.</li>
 </ol></article></slide>
 
 
