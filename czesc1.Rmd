@@ -131,3 +131,55 @@ ggplot(srednia_cena_pokoje, aes(x = n_pokoj, y = srednia_cena)) +
 znajduje się mieszkanie i liczbie pięter w budynku
 3. Znajdź średnią cenę $m^2$ w każdej dzielnicy
 4. Narysuj wykres słupkowy, na którym przedstawisz cenę $m^2$ w każdej dzielnicy
+
+# Rozwiązania
+
+## Odfiltruj jedynie nieruchomości z Psiego Pola o liczbie pokojów większej niż 2
+
+```{r}
+mieszkania %>%
+  filter(dzielnica == "Psie Pole", n_pokoj > 2) %>%
+  head
+```
+
+## Wybierz zmienne związane z piętrem i metrażem
+
+```{r}
+mieszkania %>%
+  select(pietro, metraz)
+```
+
+## Odfiltruj nieruchomości ze Śródmieścia i zapisz do nowej zmiennej
+
+```{r}
+mieszkania_srodmiescie <- mieszkania %>%
+  filter(dzielnica == "Srodmiescie")
+```
+
+## Odfiltruj nieruchomości z Krzyków...
+
+...i wyświetl jedynie informacje o piętrze, na którym
+znajduje się mieszkanie i liczbie pięter w budynku
+
+```{r}
+mieszkania %>%
+  filter(dzielnica == "Krzyki") %>%
+  select(pietro, pietro_maks)
+```
+
+
+## Znajdź średnią cenę $m^2$ w każdej dzielnicy
+
+```{r, message=FALSE, warning=FALSE}
+srednia_cena_dzielnice <- mieszkania %>%
+  group_by(dzielnica) %>%
+  summarise(srednia_cena = mean(cena_m2))
+```
+
+## Narysuj wykres słupkowy, na którym przedstawisz cenę $m^2$ w każdej dzielnicy
+
+```{r}
+ggplot(srednia_cena_dzielnice, aes(x = dzielnica, y = srednia_cena)) +
+  geom_bar(stat = "identity")
+```
+
