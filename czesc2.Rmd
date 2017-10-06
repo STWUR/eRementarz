@@ -103,7 +103,8 @@ mieszkania %>%
 	head
 ```
 
-O co chodzi ze znaczkiem **%>%**, jest to tak zwany operator strumieniowy (pipe).
+O co chodzi ze znaczkiem "**%>%**"?
+Jest to tak zwany operator strumieniowy (pipe).
 To co jest po lewej stronie staje się pierwszym argumentem funkcji po prawej stronie.
 
 ## Jak tworzyć nowe zmienne?
@@ -128,7 +129,7 @@ mieszkania %>%
 
 # Sortowanie
 
-## Chcemy je uszeregować od najniższej do najwyższej wartości
+## Chcemy uszeregować dzielnice od najniższej do najwyższej ceny za metr
 
 ```{r dzielnice_posortowane}
 mieszkania %>% 
@@ -137,13 +138,13 @@ mieszkania %>%
   arrange(cena_m2)
 ```
 
-## Ile mamy ofert w poszczególnych dzielnicach
+## Ile mamy ofert w poszczególnych dzielnicach (uszeregowane malejąco)
 
 ```{r zliczanie_obserwacji}
 mieszkania %>% 
   group_by(dzielnica) %>%
 	summarize(liczba_ofert = n()) %>%
-  arrange(liczba_ofert)
+  arrange(desc(liczba_ofert))
 ```
 
 ## Mogą nas interesować wartości ekstremalne, np. 5 z najwyższą ceną
@@ -168,10 +169,10 @@ mieszkania %>%
 do nowej zmiennej
 1. Posortuj mieszkania po liczbie pokojów
 2. Posortuj mieszkania ze Starego Miasta po metrażu
-1. Znajdź średnią cenę $m^2$ w całym Wrocławiu
+1. Znajdź średnią i medianę ceny $m^2$ w całym Wrocławiu
 3. Stwórz nową zmienną opisującą cenę całkowitą mieszkania
-1. Wyświetl ofertę o najwyższej cenie za m2 poza Starym Miastem
-2. Jak jest średnia cena mieszkań większych niz 60 m2?
+1. Wyświetl ofertę o najwyższej cenie za $m^2$ poza Starym Miastem
+2. Jak jest średnia cena mieszkań większych niz 60 $m^2$?
 3. Jaka jest przeciętna powierzchnia w zależności od piętra? Z czego może ona wynikać?
 
 # Łączenie zbiorów danych
