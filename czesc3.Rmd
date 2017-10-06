@@ -156,7 +156,7 @@ Facets pozwalają wizualizować dane rozdzielone względem wartości określoneg
 
 Argument *labeller* pozwala na automatyczne nazywanie podwykresów.
 
-```{rfig.height=4.2}
+```{r, fig.height=4.2}
 ggplot(mieszkania, aes(x = dzielnica, y = cena_m2)) +
   geom_point(position = "jitter") +
   facet_wrap(~ pokoj, labeller = label_both)
@@ -166,7 +166,7 @@ ggplot(mieszkania, aes(x = dzielnica, y = cena_m2)) +
 
 Operator + pozwala na łącznie parametrów względem których dzielimy dane.
 
-```{rfig.height=4.2}
+```{r, fig.height=4.2}
 ggplot(mieszkania, aes(x = dzielnica, y = cena_m2)) +
   geom_point(position = "jitter") +
   facet_wrap(~ pokoj + pietro, labeller = label_both)
@@ -176,7 +176,7 @@ ggplot(mieszkania, aes(x = dzielnica, y = cena_m2)) +
 
 facet_grid układa podwykresy w macierz, gdzie wartości dwóch parametrów definiują rzędy i kolumny.
 
-```{rfig.height=4.2}
+```{r, fig.height=4.2}
 ggplot(mieszkania, aes(x = dzielnica, y = cena_m2)) +
   geom_point(position = "jitter") +
   facet_grid(pietro ~ pokoj, labeller = label_both)
@@ -186,7 +186,7 @@ ggplot(mieszkania, aes(x = dzielnica, y = cena_m2)) +
 
 Facets mogą być wykorzystywane z dowolnym typem wykresów.
 
-```{rfig.height=4.2}
+```{r, fig.height=4.2}
 ggplot(mieszkania, aes(x = dzielnica, y = cena_m2)) +
   geom_boxplot() +
   facet_wrap(~ pokoj, labeller = label_both)
@@ -195,7 +195,7 @@ ggplot(mieszkania, aes(x = dzielnica, y = cena_m2)) +
 ## 
 
 
-```{rfig.height=4.2}
+```{r, fig.height=4.2}
 ggplot(mieszkania, aes(x = dzielnica, y = cena_m2, color = duze)) +
   geom_point(position = "jitter") +
   facet_grid(pietro ~ pokoj, labeller = label_both)
@@ -273,7 +273,7 @@ ggplot(mieszkania, aes(x = metraz, fill = pokoj)) +
 
 # Mapy
 
-## Kartogrm
+## Kartogram
 
 ```{r, warning=FALSE}
 load("data/mapa_dzielnic.Rdata")
@@ -340,9 +340,35 @@ ggplot(plot_data) +
 
 ## Bee swarm
 
+Wykresy punktowe potrafią być nieczytelne.
+
+```{r, warning=FALSE, message=FALSE}
+ggplot(mieszkania, aes(x = dzielnica, y = cena_m2, color = duze)) +
+  geom_point() +
+  facet_grid(pietro ~ pokoj, labeller = label_both)
+```
+
+##
+
+Losowe przesuwanie punktów nie jest zbyt przejrzyste.
+
+```{r, warning=FALSE, message=FALSE}
+ggplot(mieszkania, aes(x = dzielnica, y = cena_m2, color = duze)) +
+  geom_point(position = "jitter") +
+  facet_grid(pietro ~ pokoj, labeller = label_both)
+```
+
+## 
+
+Na ratunek przychodzą wykresy typu bee swarm, gdzie rozłożenie punktów jest pseudolosowe.
+
 ```{r, warning=FALSE, message=FALSE}
 library(ggbeeswarm)
 ggplot(mieszkania, aes(x = dzielnica, y = cena_m2, color = duze)) +
   geom_quasirandom() +
   facet_grid(pietro ~ pokoj, labeller = label_both)
 ```
+
+## Zadania
+
+Porównaj efekty *geom_quasirandom(method = "smiley")* i *geom_quasirandom(method = "frowney")*.
