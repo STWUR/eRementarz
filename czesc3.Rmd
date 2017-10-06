@@ -42,30 +42,38 @@ ggplot(srednia_cena_pokoje, aes(x = n_pokoj, y = srednia_cena)) +
   geom_bar(stat = "identity")
 ```
 
-## Zadania
-
 # Wykres punktowy
 
-## 
+## Wykres punktowy
+
+> * Każda obserwacja odpowiada jednemu punktowi na wykresie
+> * Wyznaczamy jaka zmienna ma odpowiadać każdej z osi
 
 ```{r}
 ggplot(mieszkania, aes(x = dzielnica, y = cena_m2)) +
   geom_point()
 ```
 
+##
+
+```{r}
+ggplot(mieszkania, aes(x = dzielnica, y = cena_m2, col = duze)) +
+  geom_point()
+```
 
 ##
 
-Punktu nie nachodzą na siebie
+> * Na poprzednim wykresie wszystko się zlewa
+> * Dodajemy opcję, żeby poszczególne punkty na siebie nie nachodziły
 
 ```{r}
-ggplot(mieszkania, aes(x = dzielnica, y = cena_m2)) +
+ggplot(mieszkania, aes(x = dzielnica, y = cena_m2, col = duze)) +
   geom_point(position = "jitter")
 ```
 
 ##
 
-Ustawienie punktów jest tutaj losowe
+> * Ustawienie punktów jest tutaj losowe
 
 ```{r}
 set.seed(1410)
@@ -74,6 +82,14 @@ ggplot(mieszkania, aes(x = dzielnica, y = cena_m2)) +
 ```
 
 ## Zadania
+
+1. Narysuj wykres zależności ceny mieszkania od jego powierzchni
+2. Zaznacz dodatkowo kolorem dzielnicę
+3. Narysuj wykres, który pokazuje zależność między powierzchnią mieszkania a
+liczbą pokojów
+4. Pokaż zależność ceny $m^2$ od zmiennej *pietro*
+5. (opcjonalne) Dodaj do wykresu parametr *alpha = 0.2*. Co się zmieniło?
+
 
 # Facets - podziały
 
@@ -134,7 +150,10 @@ ggplot(mieszkania, aes(x = dzielnica, y = cena_m2, color = duze)) +
 
 # Gęstość
 
-## 
+## Gęstość
+
+> * Zorientowanie się w rozkładzie
+> * Odporne na małe wahania
 
 ```{r}
 ggplot(mieszkania, aes(x = cena_m2)) +
@@ -151,7 +170,7 @@ ggplot(mieszkania, aes(x = cena_m2, fill = pokoj)) +
 ## 
 
 ```{r}
-ggplot(mieszkania, aes(x = cena_m2, fill = pokoj)) +
+ggplot(mieszkania, aes(x = cena_m2, fill = n_pokoj)) +
   geom_density(alpha = 0.2) 
 ```
 
@@ -186,7 +205,42 @@ ggplot(plot_data) +
 
 ## Zadania
 
+1. Narysuj kartogram z przeciętną wielkością mieszkania w poszczególnych dzielnicach
+2. Narysuj kartogram pokazujący zróżnicowanie cen (odchylenie standardowe) w poszcególnych
+dzielnicach
+3. Narysuj kartogram pokazujący jakie są najmnniejsze dostępne mieszkania w poszczególnych
+dzielnicach
+
 # Dodatki
+
+## Upiększenie wykresu
+
+> * Zamiast wymyślać koło...
+> * **ggthemes**
+> * scale_fill_wsj
+
+```{r}
+library(ggthemes)
+```
+
+##
+
+```{r}
+ggplot(srednia_cena_pokoje, aes(x = n_pokoj, y = srednia_cena, fill = srednia_cena)) +
+  geom_bar(stat = "identity") +
+  scale_fill_gradient2_tableau(palette = "Light Red-Green") +
+  theme_economist_white()
+```
+
+##
+
+```{r}
+ggplot(plot_data) +
+  geom_polygon(aes(x=long, y=lat, group = dzielnica, fill = cena_m2)) +
+  coord_map() +
+  scale_fill_gradient2_tableau() + #skala kolorów z programu tableau
+  theme_fivethirtyeight()  #wygląd wykresu wzorowany na fivethirtyeight
+```
 
 ## Bee swarm
 
