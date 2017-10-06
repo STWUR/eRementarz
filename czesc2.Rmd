@@ -25,7 +25,7 @@ library(tidyr)
 ## 
 
 ```{r wczytanie_danych}
-mieszkania <- read.csv("mieszkania_wroclaw_ceny.csv")
+mieszkania <- read.csv("data/mieszkania_wroclaw_ceny.csv")
 ```
 
 Najpierw sprawdźmy co w ogóle jest w tych danych

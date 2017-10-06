@@ -12,7 +12,7 @@ output: ioslides_presentation
 Do **R** można łatwo wczytywać dane z arkuszy kalkulacyjnych (.csv., .xls, .odt).
 
 ```{r}
-mieszkania <- read.csv("mieszkania_wroclaw_ceny.csv", 
+mieszkania <- read.csv("data/mieszkania_wroclaw_ceny.csv", 
                        encoding = "UTF-8")
 ```
 

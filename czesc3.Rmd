@@ -15,15 +15,14 @@ library(ggthemes)
 ## Przygotowanie danych
 
 ```{r}
-mieszkania <- read.csv(file = "mieszkania_wroclaw_ceny.csv") %>% 
+mieszkania <- read.csv(file = "data/mieszkania_wroclaw_ceny.csv") %>% 
   mutate(duze = metraz > 50,
          pietro = ifelse(pietro == 0, "parter",
                          ifelse(pietro == pietro_maks, "ostatnie_pietro",
                                 ifelse(pietro > 15, "wysoko",
                                        ifelse(pietro_maks < 3, "niska_zabudowa", "inne")))),
          pietro = factor(pietro),
-         pokoj = factor(ifelse(n_pokoj > 3, ">3", n_pokoj))) %>% 
-  filter(dzielnica != "Brak")
+         pokoj = factor(ifelse(n_pokoj > 3, ">3", n_pokoj)))
 ```
 
 ## Idea ggplot
