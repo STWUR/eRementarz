@@ -1,15 +1,14 @@
 library(dplyr)
 library(ggplot2)
 
-dat <- read.csv(file = "mieszkania_wroclaw_ceny.csv") %>% 
+dat <- read.csv(file = "./data/mieszkania_wroclaw_ceny.csv") %>% 
   mutate(duze = metraz > 50,
          pietro = ifelse(pietro == 0, "parter",
                          ifelse(pietro == pietro_maks, "ostatnie_pietro",
                                 ifelse(pietro > 15, "wysoko",
                                        ifelse(pietro_maks < 3, "niska_zabudowa", "inne")))),
          pietro = factor(pietro),
-         pokoj = factor(ifelse(n_pokoj > 3, ">3", n_pokoj))) %>% 
-  filter(dzielnica != "Brak")
+         pokoj = factor(ifelse(n_pokoj > 3, ">3", n_pokoj)))
 
 ggplot(dat, aes(x = dzielnica, y = cena_m2)) +
   geom_point()
@@ -64,17 +63,9 @@ ggplot(dat, aes(x = cena_m2, fill = pokoj)) +
 ggplot(dat, aes(x = cena_m2, fill = pokoj)) +
   geom_density(alpha = 0.2) 
 
-ggplot(final_dat, aes(x = value, fill = active)) +
+ggplot(dat, aes(x = cena_m2, fill = pokoj)) +
   geom_density(alpha = 0.2) +
-  facet_grid(pathotype ~ medium)
-
-ungroup(final_dat) %>% 
-  mutate(active = factor(active, 
-                         levels = c("W2", "W3", "W1"),
-                         labels = c("A1", "W3", "W1"))) %>% 
-  ggplot(aes(x = value, fill = active)) +
-  geom_density(alpha = 0.2) +
-  facet_wrap(~ medium)
+  facet_wrap(~ pietro)
 
 
 #kartogram
