@@ -1,6 +1,10 @@
 ---
 title: "Pierwsze kroki w R"
-output: ioslides_presentation
+date: "7 października 2017"
+author: "Piotr Sobczyk, Michał Burdukiewicz, Jakub Kwiecień"
+output: 
+  ioslides_presentation:
+    logo: banner.png
 ---
 
 ## Jak wydobyć informacje z danych?
@@ -68,7 +72,7 @@ Te komendy można ze sobą łączyć w tak zwane strumienie (pipes).
 
 ```{r}
 mieszkania %>%
-  filter(dzielnica == "Śródmieście") %>%
+  filter(dzielnica == "Srodmiescie") %>%
   select(dzielnica, pietro, cena_m2)
 ```
 
