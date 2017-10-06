@@ -175,6 +175,74 @@ do nowej zmiennej
 2. Jak jest średnia cena mieszkań większych niz 60 $m^2$?
 3. Jaka jest przeciętna powierzchnia w zależności od piętra? Z czego może ona wynikać?
 
+# Rozwiązania
+
+## Wybierz mieszkania, których powierzchnia jest większa niż 60 metrów i przypisz je do nowej zmiennej
+
+```{r}
+mieszkania_60 <- mieszkania %>% 
+  filter(metraz > 60)
+```
+
+## Posortuj mieszkania po liczbie pokojów
+
+```{r}
+mieszkania %>%
+  arrange(n_pokoj)
+```
+
+## Posortuj mieszkania ze Starego Miasta po metrażu
+
+```{r}
+mieszkania %>%
+  filter(dzielnica == 'Stare Miasto') %>%
+  arrange(metraz)
+```
+
+## Znajdź średnią i medianę ceny $m^2$ w całym Wrocławiu
+
+```{r}
+mieszkania %>%
+  summarise(srednia_cena = mean(cena_m2),
+            mediana_cena = median(cena_m2))
+```
+
+## Stwórz nową zmienną opisującą cenę całkowitą mieszkania
+
+```{r}
+mieszkania %>%
+  mutate(calkowita_cena = cena_m2 * metraz)
+```
+
+## Wyświetl ofertę o najwyższej cenie za $m^2$ poza Starym Miastem
+
+```{r}
+mieszkania %>%
+  filter(dzielnica != 'Stare Miasto') %>%
+  top_n(1, wt=cena_m2)
+```
+
+## Jak jest średnia cena mieszkań większych niz 60 $m^2$?
+
+```{r}
+mieszkania %>%
+  filter(metraz > 60) %>%
+  summarise(srednia_cena = mean(cena_m2))
+```
+
+```{r}
+mieszkania_60 %>%
+  summarise(srednia_cena = mean(cena_m2))
+```
+
+## Jaka jest przeciętna powierzchnia w zależności od piętra? Z czego może ona wynikać?
+
+```{r}
+mieszkania %>%
+  group_by(pietro) %>%
+  summarise(srednia_cena = mean(cena_m2))
+```
+
 # Łączenie zbiorów danych
 
 ## Łączenie zbiorów danych
@@ -234,6 +302,63 @@ mieszkania %>%
 4. Ile $m^2$ mieszkań do kupienia przypada na jednego mieszkańca w poszczególnych dzielnicach?
 5. Wylicz średnią cenę $m^2$ w dzielnicy i przypisz do nowej zmiennej.
 6. Połącz średnią cenę $m^2$ w dzielnicy z danymi o mieszkaniach i dla każdego mieszkania wylicz różnicę ze średnią ceną.
+
+# Rozwiązania
+
+## Posortuj dzielnice po liczbie mieszkańców
+
+```{r}
+ludnosc %>%
+  arrange(liczba_mieszkancow)
+```
+
+## Ile ofert przypada na jednego mieszkańca w poszczególnych dzielnicach?
+
+```{r}
+mieszkania %>%
+  group_by(dzielnica) %>%
+  summarise(liczba_ofert = n()) %>%
+  inner_join(ludnosc, by = c("dzielnica"="Dzielnica")) %>%
+  mutate(liczba_ofert_na_mieszkanca = liczba_ofert/liczba_mieszkancow)
+```
+
+## Posortuj dzielnice po liczbie ofert przypadających na jednego mieszkańca
+
+```{r}
+mieszkania %>%
+  group_by(dzielnica) %>%
+  summarise(liczba_ofert = n()) %>%
+  inner_join(ludnosc, by = c("dzielnica"="Dzielnica")) %>%
+  mutate(liczba_ofert_na_mieszkanca = liczba_ofert/liczba_mieszkancow) %>%
+  arrange(liczba_ofert_na_mieszkanca)
+```
+
+## Ile $m^2$ mieszkań do kupienia przypada na jednego mieszkańca w poszczególnych dzielnicach?
+
+```{r}
+mieszkania %>%
+  group_by(dzielnica) %>%
+  summarise(liczba_ofert = n()) %>%
+  inner_join(ludnosc, by = c("dzielnica"="Dzielnica")) %>%
+  mutate(m2_na_mieszkanca = metraz/liczba_mieszkancow)
+```
+
+## Wylicz średnią cenę $m^2$ w dzielnicy i przypisz do nowej zmiennej.
+
+```{r}
+dzielnice_srednia_cena <- mieszkania %>%
+  group_by(dzielnica) %>%
+  summarise(srednia_cena = mean(cena_m2))
+```
+
+## Połącz średnią cenę $m^2$ w dzielnicy z danymi o mieszkaniach i dla każdego mieszkania wylicz różnicę ze średnią ceną.
+
+```{r}
+mieszkania %>%
+  inner_join(dzielnice_srednia_cena, by=c('dzielnica')) %>%
+  mutate(roznica_od_sredniej = cena_m2 - srednia_cena)
+```
+
 
 ## 
 
@@ -295,3 +420,53 @@ się od średniej ceny $m^2$
 w każdej dzielnicy?
 4. Stwórz zmienną *czy_duze*, która ma wartość TRUE jeśli mieszkanie ma więcej niż 75 metrów
 5. Stwórz zmienną *rodzaj_zabudowy*, o wartościach: "mniej niż 3 piętra", "3 do 6 pięter", "ponad 6 pięter".
+
+# Rozwiązania
+
+## Znajdź stosunek średniej ceny $m^2$ w dzielnicach i dla Wrocławia
+
+```{r}
+mieszkania %>%
+  mutate(srednia_cena_wroclaw = mean(cena_m2)) %>%
+  group_by(dzielnica) %>%
+  summarise(srednia_cena_dzielnica = mean(cena_m2),
+            srednia_cena_wroclaw = first(srednia_cena_wroclaw)) %>%
+  mutate(stosunek_sredniej_ceny = srednia_cena_dzielnica / srednia_cena_wroclaw)
+```
+
+## Znajdź w poszczególnych dzielnicach mieszkania, które najbardziej różnią się od średniej ceny $m^2$
+
+```{r}
+mieszkania %>%
+  mutate(srednia_cena_wroclaw = mean(cena_m2)) %>%
+  group_by(dzielnica) %>%
+  summarise(srednia_cena_dzielnica = mean(cena_m2),
+            srednia_cena_wroclaw = first(srednia_cena_wroclaw)) %>%
+  group_by(dzielnica) %>%
+  top_n(1, wt=abs(srednia_cena_dzielnica-srednia_cena_wroclaw))
+```
+
+## Wybierz losowo 10 mieszkań ze zbioru danych (funkcja **sample_n**)
+
+```{r}
+
+```
+
+## Jaka jest powierzchnia mieszkań do kupienia w stosunku do liczby mieszkańców w każdej dzielnicy?
+
+```{r}
+
+```
+
+## Stwórz zmienną *czy_duze*, która ma wartość TRUE jeśli mieszkanie ma więcej niż 75 metrów
+
+```{r}
+
+```
+
+## Stwórz zmienną *rodzaj_zabudowy*, o wartościach: "mniej niż 3 piętra", "3 do 6 pięter", "ponad 6 pięter".
+
+```{r}
+
+```
+
