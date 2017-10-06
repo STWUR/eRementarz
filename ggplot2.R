@@ -101,37 +101,58 @@ ggplot(dat, aes(x = duze, fill = dzielnica)) +
 # for each active substance.
 # 2. Show on a barchart number of strains from each pathotype.
 
-thr_dat2 <- group_by(thr_dat, medium) %>% 
-  summarise(thr = mean(thr))
+ggplot(dat, aes(x = dzielnica, fill = duze)) +
+  geom_bar(position = "fill")
 
-rbind(mutate(thr_dat2, thr_et = TRUE),
-      mutate(thr_dat2, thr_et = FALSE,
-             thr = 1 - thr)) %>% 
-  ggplot(aes(x = medium, y = thr, fill = thr_et, label = formatC(thr, 2))) +
+# jak dodaæ tekst?
+
+dat_duze <- group_by(dat, dzielnica) %>% 
+  summarise(duze = mean(duze))
+
+rbind(mutate(dat_duze, duze_et = TRUE),
+      mutate(dat_duze, duze_et = FALSE,
+             duze = 1 - duze)) %>% 
+  ggplot(aes(x = dzielnica, y = duze, fill = duze_et, label = formatC(duze, 2))) +
   geom_bar(stat = "identity") +
-  geom_text(vjust = 2)
+  geom_text(vjust = -1)
 
 
-mean_dat <- group_by(final_dat, active, medium, pathotype) %>% 
-  summarise(mean_value = mean(value),
-            sd_value = sd(value))
+dat_srednia <- group_by(dat, pietro, dzielnica, duze) %>% 
+  summarise(mean_cena = mean(cena_m2),
+            sd_cena = sd(cena_m2))
 
-ggplot(mean_dat, aes(x = pathotype, y = active, fill = mean_value)) +
+ggplot(dat_srednia, aes(x = dzielnica, y = pietro, fill = mean_cena)) +
   geom_tile(color = "black") +
-  facet_wrap(~ medium)
+  facet_wrap(~ duze)
 
-ggplot(mean_dat, aes(x = pathotype, y = mean_value, fill = medium)) +
+
+library(tidyr)
+complete(dat_srednia, pietro, dzielnica, duze, 
+         fill = list(mean_cena = 0,
+                     sd_cena = 0)) %>% 
+  ggplot(aes(x = dzielnica, y = pietro, fill = mean_cena)) +
+  geom_tile(color = "black") +
+  facet_wrap(~ duze)
+
+# wykresy slupkowe ----------------------------
+
+ggplot(dat_srednia, aes(x = dzielnica, y = mean_cena, fill = pietro)) +
   geom_bar(position = "dodge", stat = "identity") + 
-  facet_wrap(~ active, ncol = 1)
+  facet_wrap(~ duze, ncol = 1)
 
-ggplot(mean_dat, aes(x = pathotype, y = mean_value, fill = medium)) +
-  geom_col(position = "dodge") +
-  facet_wrap(~ active, ncol = 1)
+ggplot(dat_srednia, aes(x = dzielnica, y = mean_cena, fill = pietro)) +
+  geom_col(position = "dodge") + 
+  facet_wrap(~ duze, ncol = 1)
 
-ggplot(mean_dat, aes(x = pathotype, y = mean_value, fill = medium)) +
+ggplot(dat_srednia, aes(x = dzielnica, y = mean_cena, fill = pietro)) +
   geom_col(position = "dodge") +
-  geom_errorbar(aes(ymax = mean_value + sd_value, ymin = mean_value, color = medium), position = "dodge") +
-  facet_wrap(~ active, ncol = 1) +
+  geom_errorbar(aes(ymax = mean_cena + sd_cena, ymin = mean_cena, color = pietro), position = "dodge") +
+  facet_wrap(~ duze, ncol = 1)
+
+ggplot(dat_srednia, aes(x = dzielnica, y = mean_cena, fill = pietro)) +
+  geom_col(position = "dodge") +
+  geom_errorbar(aes(ymax = mean_cena + sd_cena, ymin = mean_cena, color = pietro), position = "dodge") +
+  facet_wrap(~ duze, ncol = 1) +
   coord_flip()
 
 # 1. Using a bar chart compare median values for each medium and pathotype. 
@@ -152,7 +173,8 @@ ggplot(mean_dat, aes(x = pathotype, y = mean_value, fill = medium)) +
 p <- ggplot(mean_dat, aes(x = pathotype, y = mean_value, fill = medium)) +
   geom_col(position = "dodge") +
   geom_errorbar(aes(ymax = mean_value + sd_value, ymin = mean_value, color = medium), position = "dodge") +
-  facet_wrap(~ active, ncol = 1)
+  facet_wrap(~ active, nrow = 1) + 
+  coord_flip()
 
 p + theme(axis.text.x = element_text(angle = 90, hjust = 1))
 
@@ -162,12 +184,12 @@ p + theme(axis.text.x = element_text(angle = 90, hjust = 1),
 my_theme <- theme(axis.text.x = element_text(angle = 90, hjust = 1),
                   legend.position = "bottom")
 
-ggplot(thr_dat, aes(x = medium, fill = thr)) +
+ggplot(dat, aes(x = dzielnica, fill = duze)) +
   geom_bar(position = "fill") +
   my_theme
 
 
-ggplot(thr_dat, aes(x = medium, fill = thr)) +
+ggplot(dat, aes(x = dzielnica, fill = duze)) +
   geom_bar(position = "fill") +
   theme_bw()
 # 1. Create your own theme. See ?theme
