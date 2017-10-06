@@ -3,6 +3,10 @@ title: "Drugie starcie, pierwsza krew"
 output: ioslides_presentation
 ---
 
+##
+
+<img src="rambo.jpg" width="800">
+
 ## Ładowanie pakietów
 
 ```{r, message=FALSE, warning = FALSE}
@@ -10,13 +14,21 @@ library(dplyr)
 library(tidyr)
 ```
 
+Instalacja
+```{r, eval = FALSE}
+install.packages("dplyr")
+```
+
+> * Pakiet (biblioteka) to zbiór funkcji
+> * Wczoraj na CRAN było 11566 pakietów. Większość z nich to wyspecjalizowane narzędzia do analizy, wizualizacji czy modelowania danych
+
 
 ## Skąd brać informacje?
 
-* google (zwykle odpowiedzi na stack overflow)
-* dokumentacja
-* ,,ściągawka" https://github.com/rstudio/cheatsheets/raw/master/data-transformation.pdf
-* grupa STWUR na facebooku
+> * google (zwykle odpowiedzi na stack overflow)
+> * dokumentacja
+> * ,,ściągawka" https://github.com/rstudio/cheatsheets/raw/master/data-transformation.pdf
+> * grupa STWUR na facebooku
 
 ## Jak wydobyć informacje z danych?
 
