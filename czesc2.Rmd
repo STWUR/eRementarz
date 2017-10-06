@@ -1,6 +1,9 @@
 ---
 title: "Drugie starcie, pierwsza krew"
-output: ioslides_presentation
+date: "7 października 2017"
+author: "Piotr Sobczyk, Michał Burdukiewicz, Jakub Kwiecień"
+output: 
+  ioslides_presentation
 ---
 
 ##
@@ -182,6 +185,7 @@ do nowej zmiennej
 ```{r}
 mieszkania_60 <- mieszkania %>% 
   filter(metraz > 60)
+mieszkania_60
 ```
 
 ## Posortuj mieszkania po liczbie pokojów
@@ -319,7 +323,7 @@ mieszkania %>%
   group_by(dzielnica) %>%
   summarise(liczba_ofert = n()) %>%
   inner_join(ludnosc, by = c("dzielnica"="Dzielnica")) %>%
-  mutate(liczba_ofert_na_mieszkanca = liczba_ofert/liczba_mieszkancow)
+  mutate(liczba_ofert_na_mieszkanca = liczba_ofert/liczba_mieszkancow/1000)
 ```
 
 ## Posortuj dzielnice po liczbie ofert przypadających na jednego mieszkańca
@@ -329,7 +333,7 @@ mieszkania %>%
   group_by(dzielnica) %>%
   summarise(liczba_ofert = n()) %>%
   inner_join(ludnosc, by = c("dzielnica"="Dzielnica")) %>%
-  mutate(liczba_ofert_na_mieszkanca = liczba_ofert/liczba_mieszkancow) %>%
+  mutate(liczba_ofert_na_mieszkanca = liczba_ofert/liczba_mieszkancow/1000) %>%
   arrange(liczba_ofert_na_mieszkanca)
 ```
 
@@ -338,9 +342,9 @@ mieszkania %>%
 ```{r}
 mieszkania %>%
   group_by(dzielnica) %>%
-  summarise(liczba_ofert = n()) %>%
+  summarise(metraz = sum(metraz)) %>%
   inner_join(ludnosc, by = c("dzielnica"="Dzielnica")) %>%
-  mutate(m2_na_mieszkanca = metraz/liczba_mieszkancow)
+  mutate(m2_na_mieszkanca = metraz/liczba_mieszkancow/1000)
 ```
 
 ## Wylicz średnią cenę $m^2$ w dzielnicy i przypisz do nowej zmiennej.
@@ -356,13 +360,14 @@ dzielnice_srednia_cena <- mieszkania %>%
 ```{r}
 mieszkania %>%
   inner_join(dzielnice_srednia_cena, by=c('dzielnica')) %>%
-  mutate(roznica_od_sredniej = cena_m2 - srednia_cena)
+  mutate(roznica_od_sredniej = cena_m2 - srednia_cena) %>%
+  select(dzielnica, cena_m2, roznica_od_sredniej)
 ```
 
 
 ## 
 
-Możemy zbadać, które dzielnice mają bardziej charakter ,,lokalny", 
+Możemy zbadać, które dzielnice mają bardziej charakter "lokalny", 
 a w których ludność szybciej się zmienia
 
 ```{r, warning=FALSE}
@@ -412,61 +417,56 @@ mieszkania %>%
 
 ## Zadania
 
-1. Znajdź różnicę w cenie $m^2$ między dzielnicami a średnią dla Wrocławia
+1. Znajdź stosunek średniej ceny $m^2$ w dzielnicach do średniej ceny $m^2$ dla Wrocławia
 1. Znajdź w poszczególnych dzielnicach mieszkania, które najbardziej różnią
 się od średniej ceny $m^2$
 2. Wybierz losowo 10 mieszkań ze zbioru danych (funkcja **sample_n**)
-3. Jaka jest powierzchnia mieszkań do kupienia w stosunku do liczby mieszkańców
-w każdej dzielnicy?
 4. Stwórz zmienną *czy_duze*, która ma wartość TRUE jeśli mieszkanie ma więcej niż 75 metrów
 5. Stwórz zmienną *rodzaj_zabudowy*, o wartościach: "mniej niż 3 piętra", "3 do 6 pięter", "ponad 6 pięter".
 
 # Rozwiązania
 
-## Znajdź stosunek średniej ceny $m^2$ w dzielnicach i dla Wrocławia
+## Znajdź stosunek średniej ceny $m^2$ w dzielnicach do średniej ceny $m^2$ dla Wrocławia
 
 ```{r}
 mieszkania %>%
-  mutate(srednia_cena_wroclaw = mean(cena_m2)) %>%
+  mutate(cena_wroclaw = mean(cena_m2)) %>%
   group_by(dzielnica) %>%
-  summarise(srednia_cena_dzielnica = mean(cena_m2),
-            srednia_cena_wroclaw = first(srednia_cena_wroclaw)) %>%
-  mutate(stosunek_sredniej_ceny = srednia_cena_dzielnica / srednia_cena_wroclaw)
+  summarise(cena_dzielnica = mean(cena_m2), cena_wroclaw = first(cena_wroclaw)) %>%
+  mutate(stosunek_ceny_dz_wr = cena_dzielnica / cena_wroclaw)
 ```
 
 ## Znajdź w poszczególnych dzielnicach mieszkania, które najbardziej różnią się od średniej ceny $m^2$
 
 ```{r}
 mieszkania %>%
-  mutate(srednia_cena_wroclaw = mean(cena_m2)) %>%
   group_by(dzielnica) %>%
-  summarise(srednia_cena_dzielnica = mean(cena_m2),
-            srednia_cena_wroclaw = first(srednia_cena_wroclaw)) %>%
-  group_by(dzielnica) %>%
-  top_n(1, wt=abs(srednia_cena_dzielnica-srednia_cena_wroclaw))
+  mutate(cena_dzielnica = mean(cena_m2)) %>%
+  top_n(1, wt=abs(cena_dzielnica-cena_m2))
 ```
 
 ## Wybierz losowo 10 mieszkań ze zbioru danych (funkcja **sample_n**)
 
 ```{r}
-
-```
-
-## Jaka jest powierzchnia mieszkań do kupienia w stosunku do liczby mieszkańców w każdej dzielnicy?
-
-```{r}
-
+mieszkania %>%
+  sample_n(10)
 ```
 
 ## Stwórz zmienną *czy_duze*, która ma wartość TRUE jeśli mieszkanie ma więcej niż 75 metrów
 
 ```{r}
-
+mieszkania %>%
+  mutate(czy_duze = metraz > 75) %>%
+  select(metraz, czy_duze)
 ```
 
 ## Stwórz zmienną *rodzaj_zabudowy*, o wartościach: "mniej niż 3 piętra", "3 do 6 pięter", "ponad 6 pięter".
 
 ```{r}
-
+mieszkania %>%
+  mutate(rodzaj_zabudowy = case_when(pietro_maks < 3 ~ "mniej niż 3 piętra",
+                                     pietro_maks <= 6 ~ "3 do 6 pięter",
+                                     TRUE ~ "ponad 6 pięter")) %>%
+  select(pietro_maks, rodzaj_zabudowy)
 ```
 
