@@ -86,19 +86,16 @@ ggplot(plot_data) +
 
 # 1. Create a density plot for each pathotype and medium.
 
-thr_dat <- mutate(final_dat, thr = value > 0.07)
 
-ggplot(thr_dat, aes(x = thr)) +
+ggplot(dat, aes(x = duze)) +
   geom_bar()
 
-ggplot(thr_dat, aes(x = thr, fill = medium)) +
+ggplot(dat, aes(x = duze, fill = dzielnica)) +
   geom_bar()
 
-ggplot(thr_dat, aes(x = thr, fill = medium)) +
+ggplot(dat, aes(x = duze, fill = dzielnica)) +
   geom_bar(position = "fill")
 
-ggplot(thr_dat, aes(x = medium, fill = thr)) +
-  geom_bar(position = "fill") 
 
 # 1. Using facets and bar charts show threshold data separately
 # for each active substance.
