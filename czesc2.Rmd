@@ -1,15 +1,10 @@
 ---
 title: "Drugie starcie, pierwsza krew"
 date: "7 października 2017"
-<<<<<<< HEAD
 author: "Piotr Sobczyk, Michał Burdukiewicz, Jakub Kwiecień"
-output: 
-  ioslides_presentation
-=======
 output: 
   ioslides_presentation:
     logo: banner.png
->>>>>>> 1c0ee1c513cb8e3316edbe01b6e38a43c008f90f
 ---
 
 ##
