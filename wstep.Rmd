@@ -1,0 +1,38 @@
+---
+title: "Przed pierwszymi krokami w R"
+date: "7 października 2017"
+author: "STWUR"
+output: 
+  ioslides_presentation:
+    logo: banner.png
+---
+
+## Co to jest R
+
+Plan spotkania:
+ 
+ - Pierwsze kroki w **R** (podstawy).
+ - Przerwa (20 min).
+ - Drugie starcie z **R** (manipulacja danymi).
+ - Pizza (40 min).
+ - Wizualizacje danych w **R**.
+ - Nieoficjalny finał w pubie.
+
+## Jak zacząć pracę z R?
+
+ - https://cran.r-project.org/ - R.
+ - https://www.rstudio.com/ - środowisko programistyczne dedykowane dla R.
+ - [stwur.pl](stwur.pl) - strona Stowarzyszenia Wrocławskich Użytkowników R.
+ - https://github.com/STWUR/eRementarz (repozytorium z materiałami do dzisiejszego spotkania).
+ 
+## Sponsorzy
+
+Kruk SA (pizza + napoje).
+
+<img src='https://stwur.github.io/STWUR//images/kruk_logo.jpg' id="logo" height="30%" width="30%"/>
+
+Krajowy Naukowy Ośrodek Wiodący Wrocławskie Centrum Biotechnologii (RStudio Server)
+
+<img src='http://know.wroc.pl/starter/images/LogoKnow.png' id="logo_know" height="35%" width="35%"/>
+
+Wydział Biotechnologii Uniwersytetu Wrocławskiego (pomieszczenie)
