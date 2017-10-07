@@ -85,7 +85,8 @@ mieszkania %>%
 
 ## 
 
-Interesować nas może podsumowanie. Np. ile średnio kosztują mieszkania w zależności
+Podsumowania pozwalają obliczyć statystykę agregującą dla grupy daych. 
+Np. ile średnio kosztują mieszkania w zależności
 od liczby pokojów lub piętra.
 
 ```{r}

@@ -202,8 +202,10 @@ mieszkania[5:10, &quot;dzielnica&quot;]</pre>
 </article></slide><slide class=''><hgroup><h2>Co już znamy?</h2></hgroup><article  id="co-juz-znamy">
 
 <pre class = 'prettyprint lang-r'>mieszkania %&gt;% 
-  group_by(dzielnica) %&gt;% #grupujemy obserwacje
-  summarise(sredni_metraz = mean(metraz)) #osobno w każdej grupie liczymy średnią</pre>
+  #grupujemy obserwacje
+  group_by(dzielnica) %&gt;% 
+  #osobno w każdej grupie liczymy średnią
+  summarise(sredni_metraz = mean(metraz)) </pre>
 
 <pre >## # A tibble: 5 x 2
 ##      dzielnica sredni_metraz
@@ -217,8 +219,10 @@ mieszkania[5:10, &quot;dzielnica&quot;]</pre>
 </article></slide><slide class=''><hgroup><h2>Co już znamy?</h2></hgroup><article  id="co-juz-znamy-1">
 
 <pre class = 'prettyprint lang-r'>mieszkania %&gt;%
-  filter(dzielnica == &quot;Srodmiescie&quot;) %&gt;% #filtrujemy wiersze
-  select(dzielnica, pietro, cena_m2) %&gt;% #wybieramy zmienne
+  #filtrujemy wiersze
+  filter(dzielnica == &quot;Srodmiescie&quot;) %&gt;% 
+  #wybieramy zmienne
+  select(dzielnica, pietro, cena_m2) %&gt;% 
     head</pre>
 
 <pre >##     dzielnica pietro cena_m2
@@ -239,7 +243,8 @@ mieszkania[5:10, &quot;dzielnica&quot;]</pre>
 </article></slide><slide class=''><hgroup><h2></h2></hgroup><article  id="section-4">
 
 <pre class = 'prettyprint lang-r'>mieszkania %&gt;% 
-    select(dzielnica, metraz, cena_m2) %&gt;% #wybieramy zmienne
+  #wybieramy zmienne
+    select(dzielnica, metraz, cena_m2) %&gt;% 
     head</pre>
 
 <pre >##     dzielnica metraz cena_m2
@@ -30777,7 +30782,7 @@ ludnosc</pre>
   summarise(srednia_cena_dzielnica = mean(cena_m2),
             srednia_cena_wroclaw = first(srednia_cena_wroclaw)) %&gt;%
   group_by(dzielnica) %&gt;%
-  top_n(1, wt=abs(srednia_cena_dzielnica-srednia_cena_wroclaw))</pre>
+  top_n(1, wt = abs(srednia_cena_dzielnica-srednia_cena_wroclaw))</pre>
 
 <pre >## # A tibble: 5 x 3
 ## # Groups:   dzielnica [5]

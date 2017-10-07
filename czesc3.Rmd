@@ -35,6 +35,8 @@ mieszkania <- read.csv(file = "data/mieszkania_wroclaw_ceny.csv") %>%
 > * Wybieramy jakiego rodzaju wykres chcemy (punkty, słupki itp)
 > * https://github.com/rstudio/cheatsheets/raw/master/data-visualization-2.1.pdf
 
+# Wykres słupkowy
+
 ## Przypomnienie 
 
 ```{r, message=FALSE}
@@ -53,19 +55,11 @@ ggplot(mieszkania, aes(x = n_pokoj)) +
   geom_bar()
 ```
 
-
-## Zadania
-
-1. Stwórz wykres słupkowy pokazujący jak średni metraż zależy od liczby pokojów
-2. Dodaj wypełnienie (*fill*) kolorem zależnym od zmiennej *n_pokoj*
-3. Stwórz wykres pokazujący ile jest ofert w zależności od dzielnicy
-4. Dodaj wypełnienie zależne od zmiennej *pokoj*
-
 ##
 
 ```{r}
-ggplot(mieszkania, aes(x = dzielnica, y = ..count..)) +
-  geom_bar(aes(fill = pokoj), position = "stack")
+ggplot(mieszkania, aes(x = dzielnica, y = ..count.., fill = pokoj)) +
+  geom_bar(position = "stack")
 ```
 
 ## 
@@ -73,10 +67,81 @@ ggplot(mieszkania, aes(x = dzielnica, y = ..count..)) +
 > * Aby móc łatwo porównać skalujemy każdy słupek do tej samej wysokości
 > * Gdzie mamy największe, a gdzie najmniejsze mieszkania?
 
-```{r barplot_fill}
-ggplot(mieszkania, aes(x = dzielnica, y = ..count..)) +
-  geom_bar(aes(fill = pokoj), position = "fill")
+```{r}
+ggplot(mieszkania, aes(x = dzielnica, fill = pokoj)) +
+  geom_bar(position = "fill") 
 ```
+
+## 
+
+> * Wykres słupkowy można uzupełnić dokładnymi wysokościami słupków wykorzystując funkcje ggplot2.
+
+```{r barplot_fill}
+ggplot(mieszkania, aes(x = dzielnica, fill = pokoj, 
+                       label = ..count..)) +
+  geom_bar(position = "fill") +
+  geom_text(stat = "count", position = "fill", vjust = 2)
+```
+
+## Zadania
+
+1. Stwórz wykres słupkowy pokazujący jak średni metraż zależy od liczby pokojów
+2. Dodaj wypełnienie (*fill*) kolorem zależnym od zmiennej *n_pokoj*
+3. Stwórz wykres pokazujący ile jest ofert w zależności od dzielnicy
+4. Dodaj wypełnienie zależne od zmiennej *pokoj*
+5. Dodaj liczbę ofert przy pomocy geom_text.
+
+# Słupki błędów
+
+## 
+
+Najpierw policzmy średnie i odchylenia standardowe:
+
+```{r}
+dat_srednia <- group_by(mieszkania, pietro, dzielnica, duze) %>% 
+  summarise(mean_cena = mean(cena_m2),
+            sd_cena = sd(cena_m2))
+head(dat_srednia)
+```
+
+## 
+
+Tym razem wykorzystujemy *stat = "identity"*, aby okreslić wysokość słupków.
+
+```{r}
+ggplot(dat_srednia, aes(x = dzielnica, y = mean_cena, fill = pietro)) +
+  geom_bar(stat = "identity") + 
+  facet_wrap(~ duze, ncol = 1)
+```
+
+##
+
+Zmieniamy na *position = "dodge"*, aby słupki stały obok siebie.
+
+```{r}
+ggplot(dat_srednia, aes(x = dzielnica, y = mean_cena, fill = pietro)) +
+  geom_bar(stat = "identity", position = "dodge") + 
+  facet_wrap(~ duze, ncol = 1)
+```
+
+## 
+
+Dodajemy słupki błędów.
+
+```{r}
+ggplot(dat_srednia, aes(x = dzielnica, y = mean_cena, fill = pietro)) +
+  geom_bar(stat = "identity", position = "dodge") + 
+  geom_errorbar(aes(ymax = mean_cena + sd_cena, 
+                    ymin = mean_cena, color = pietro), position = "dodge") +
+  facet_wrap(~ duze, ncol = 1)
+```
+
+## Zadania
+
+1. Oblicz medianę (*median*) i odchylenie standardowe mediany (*mad*) ceny metra kwadratowego w zależności od piętra i dzielnicy.
+2. Stwórz wykres słupkowy przedstawiający mediany cen w zależności od dzielnicy.
+3. Jako wypełnienie (*fill*) wybierz piętro.
+4. Przedstaw odchylenie standardowe mediany w postaci słupków błędu.
 
 # Wykres punktowy
 
@@ -340,7 +405,7 @@ ggplot(plot_data) +
 
 ## Bee swarm
 
-Wykresy punktowe potrafią być nieczytelne.
+Wykresy punktowe mogą być nieczytelne, gdy punktów jest bardzo dużo.
 
 ```{r, warning=FALSE, message=FALSE}
 ggplot(mieszkania, aes(x = dzielnica, y = cena_m2, color = duze)) +

@@ -75,16 +75,20 @@ mieszkania[5:10, "dzielnica"]
 
 ```{r}
 mieszkania %>% 
-  group_by(dzielnica) %>% #grupujemy obserwacje
-  summarise(sredni_metraz = mean(metraz)) #osobno w każdej grupie liczymy średnią
+  #grupujemy obserwacje
+  group_by(dzielnica) %>% 
+  #osobno w każdej grupie liczymy średnią
+  summarise(sredni_metraz = mean(metraz)) 
 ```
 
 ## Co już znamy?
 
 ```{r, warning=FALSE}
 mieszkania %>%
-  filter(dzielnica == "Srodmiescie") %>% #filtrujemy wiersze
-  select(dzielnica, pietro, cena_m2) %>% #wybieramy zmienne
+  #filtrujemy wiersze
+  filter(dzielnica == "Srodmiescie") %>% 
+  #wybieramy zmienne
+  select(dzielnica, pietro, cena_m2) %>% 
 	head
 ```
 
@@ -102,7 +106,8 @@ mieszkania <- mieszkania %>%
 
 ```{r}
 mieszkania %>% 
-	select(dzielnica, metraz, cena_m2) %>% #wybieramy zmienne
+  #wybieramy zmienne
+	select(dzielnica, metraz, cena_m2) %>% 
 	head
 ```
 
@@ -446,7 +451,7 @@ mieszkania %>%
   summarise(srednia_cena_dzielnica = mean(cena_m2),
             srednia_cena_wroclaw = first(srednia_cena_wroclaw)) %>%
   group_by(dzielnica) %>%
-  top_n(1, wt=abs(srednia_cena_dzielnica-srednia_cena_wroclaw))
+  top_n(1, wt = abs(srednia_cena_dzielnica-srednia_cena_wroclaw))
 ```
 
 ## Wybierz losowo 10 mieszkań ze zbioru danych (funkcja **sample_n**)
